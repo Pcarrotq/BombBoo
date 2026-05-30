@@ -12,19 +12,22 @@ public class Player : MonoBehaviour
     PlayerType playerType;
 
     private Rigidbody2D rb;
+    [SerializeField] private Transform pAttackPoint;
     private float pSpeed = 5f;
     private float pJumpForce = 5f;
     private float pAttackForce = 10f;
-    private float pAttackRange = 2f;
+    private Vector2 pAttackRange;
     private float pHP = 100f;
 
-    //[SerializeField] private Monster monster;
     [SerializeField] private Monster monster;
+    LayerMask monsterLayer;
     
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerType = PlayerType.bomb;
+
+        pAttackRange = new Vector2(1f, 1f);
     }
 
     // Update is called once per frame
@@ -41,15 +44,19 @@ public class Player : MonoBehaviour
 
     void KeyInput()
     {
+        Vector3 movePosition = Vector3.zero;
+
         // bomb으로 전환했을 때 위에서 아래로 떨어지면 hp가 깎이는 기능 추가?
         if (playerType == PlayerType.bomb)
         {
             if (Input.GetKey(KeyCode.A))
             {
+                movePosition = Vector3.left;
                 transform.Translate(-pSpeed * Time.deltaTime, 0, 0);
             }
             if (Input.GetKey(KeyCode.D))
             {
+                movePosition = Vector3.right;
                 transform.Translate(pSpeed * Time.deltaTime, 0, 0);
             }
             if (Input.GetKeyUp(KeyCode.Space))
@@ -66,7 +73,7 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.E))
             {
-                monster.TakeDamage(pAttackForce);
+                AttackRange();
             }
         }
         else if (playerType == PlayerType.boo)
@@ -77,6 +84,7 @@ public class Player : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.A))
             {
+                movePosition = Vector3.left;
                 transform.Translate(-pSpeed * Time.deltaTime, 0, 0);
             }
             if (Input.GetKey(KeyCode.S))
@@ -85,6 +93,7 @@ public class Player : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.D))
             {
+                movePosition = Vector3.right;
                 transform.Translate(pSpeed * Time.deltaTime, 0, 0);
             }
 
@@ -94,6 +103,24 @@ public class Player : MonoBehaviour
                 playerType = PlayerType.bomb;
                 Debug.Log("Tab, booo to bomb");
             }
+        }
+    }
+
+    void AttackRange()
+    {
+        Debug.Log("AttackRange() 함수 실행");
+        
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(pAttackPoint.position, pAttackRange, monsterLayer);
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.CompareTag("Monster"))
+            {
+                monster.TakeDamage(pAttackForce);
+            }
+
+            Debug.Log("감지된 몬스터 수: " + colliders.Length);
+            Debug.Log(collider.name);
         }
     }
 }
