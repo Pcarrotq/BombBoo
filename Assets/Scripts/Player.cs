@@ -17,7 +17,9 @@ public class Player : MonoBehaviour
     private float pJumpForce = 5f;
     private float pAttackForce = 10f;
     private Vector2 pAttackRange;
-    private float pHP = 100f;
+
+    public float pCurrHP;
+    public float pMaxHP;
 
     [SerializeField] private Monster monster;
     LayerMask monsterLayer;
@@ -28,6 +30,9 @@ public class Player : MonoBehaviour
         playerType = PlayerType.bomb;
 
         pAttackRange = new Vector2(1f, 1f);
+
+        pMaxHP = 100f;
+        pCurrHP = pMaxHP;
     }
 
     // Update is called once per frame
@@ -108,8 +113,6 @@ public class Player : MonoBehaviour
 
     void AttackRange()
     {
-        Debug.Log("AttackRange() 함수 실행");
-        
         Collider2D[] colliders = Physics2D.OverlapBoxAll(pAttackPoint.position, pAttackRange, monsterLayer);
 
         foreach (Collider2D collider in colliders)
@@ -118,9 +121,17 @@ public class Player : MonoBehaviour
             {
                 monster.TakeDamage(pAttackForce);
             }
+        }
+    }
 
-            Debug.Log("감지된 몬스터 수: " + colliders.Length);
-            Debug.Log(collider.name);
+    public void TakeDamage(int damage)
+    {
+        if (playerType == PlayerType.boo) return;
+        pCurrHP -= damage;
+
+        if (pCurrHP <= 0)
+        {
+            Time.timeScale = 0f;
         }
     }
 }

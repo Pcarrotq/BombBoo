@@ -12,9 +12,8 @@ public class Monster : MonoBehaviour
     [SerializeField] private MonsterType monsterType;
 
     public float mCurHP;
-    float mMaxHP;
+    public float mMaxHP;
 
-    // Start is called before the first frame update
     void Start()
     {
         if (monsterType == MonsterType.boss)
@@ -29,7 +28,6 @@ public class Monster : MonoBehaviour
         mCurHP = mMaxHP;
     }
 
-    // Update is called once per frame
     void Update()
     {
     }
