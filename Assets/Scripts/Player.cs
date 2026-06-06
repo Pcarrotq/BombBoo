@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum PlayerType
+{
+    bomb,
+    boo
+}
+
 public class Player : MonoBehaviour
 {
-    public enum PlayerType
-    {
-        bomb,
-        boo
-    }
     PlayerType playerType;
+    MonsterType monsterType;
+    Monster monster;
 
     private Rigidbody2D rb;
     [SerializeField] private Transform pAttackPoint;
@@ -17,12 +20,14 @@ public class Player : MonoBehaviour
     private float pJumpForce = 5f;
     private float pAttackForce = 10f;
     private Vector2 pAttackRange;
+    private int facingDir = 1;
 
     public float pCurrHP;
     public float pMaxHP;
+    
+    int pLevel = 0;
 
-    [SerializeField] private Monster monster;
-    LayerMask monsterLayer;
+    [SerializeField] private LayerMask monsterLayer;
     
     void Start()
     {
@@ -38,30 +43,22 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (monster.mCurHP <= 0)
-        {
-            Time.timeScale = 0f;
-            return;
-        }
-        
         KeyInput();
     }
 
     void KeyInput()
     {
-        Vector3 movePosition = Vector3.zero;
-
         // bomb으로 전환했을 때 위에서 아래로 떨어지면 hp가 깎이는 기능 추가?
         if (playerType == PlayerType.bomb)
         {
             if (Input.GetKey(KeyCode.A))
             {
-                movePosition = Vector3.left;
+                facingDir = -1;
                 transform.Translate(-pSpeed * Time.deltaTime, 0, 0);
             }
             if (Input.GetKey(KeyCode.D))
             {
-                movePosition = Vector3.right;
+                facingDir = 1;
                 transform.Translate(pSpeed * Time.deltaTime, 0, 0);
             }
             if (Input.GetKeyUp(KeyCode.Space))
@@ -89,7 +86,7 @@ public class Player : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.A))
             {
-                movePosition = Vector3.left;
+                facingDir = -1;
                 transform.Translate(-pSpeed * Time.deltaTime, 0, 0);
             }
             if (Input.GetKey(KeyCode.S))
@@ -98,7 +95,7 @@ public class Player : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.D))
             {
-                movePosition = Vector3.right;
+                facingDir = 1;
                 transform.Translate(pSpeed * Time.deltaTime, 0, 0);
             }
 
@@ -109,18 +106,27 @@ public class Player : MonoBehaviour
                 Debug.Log("Tab, booo to bomb");
             }
         }
+        
+        pAttackPoint.localPosition = new Vector3(facingDir * 1f, 0f, 0f);
     }
 
     void AttackRange()
     {
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(pAttackPoint.position, pAttackRange, monsterLayer);
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(pAttackPoint.position, pAttackRange, 0, monsterLayer);
 
         foreach (Collider2D collider in colliders)
         {
+            monster = collider.GetComponent<Monster>();
+
             if (collider.CompareTag("Monster"))
             {
                 monster.TakeDamage(pAttackForce);
             }
+
+            /*if (monster != null)
+            {
+                monster.TakeDamage(pAttackForce);
+            }*/
         }
     }
 
@@ -133,5 +139,11 @@ public class Player : MonoBehaviour
         {
             Time.timeScale = 0f;
         }
+    }
+
+    public void GetExp(int exp)
+    {
+        pLevel += exp;
+        Debug.Log("Player Exp = " + pLevel);
     }
 }
