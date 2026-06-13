@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum PlayerType
@@ -11,27 +12,30 @@ public enum PlayerType
 public class Player : MonoBehaviour
 {
     PlayerType playerType;
-    MonsterType monsterType;
     Monster monster;
+    [SerializeField] private LayerMask monsterLayer;
 
-    private Rigidbody2D rb;
-    [SerializeField] private Transform pAttackPoint;
+    private Rigidbody rb;
+    
     private float pSpeed = 5f;
     private float pJumpForce = 5f;
+
+    [SerializeField] private Transform pAttackPoint;
     private float pAttackForce = 10f;
     private Vector2 pAttackRange;
-    private int facingDir = 1;
 
     public float pCurrHP;
     public float pMaxHP;
     
     int pLevel = 0;
+    [SerializeField] private TMP_Text pLevelText;
 
-    [SerializeField] private LayerMask monsterLayer;
-    
+    [SerializeField] private Transform cameraPivot;
+
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
         playerType = PlayerType.bomb;
 
         pAttackRange = new Vector2(1f, 1f);
@@ -43,7 +47,14 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        pLevelText.text = $"{pLevel}";
         KeyInput();
+        FollowCameraRotate();
+    }
+
+    void FollowCameraRotate()
+    {
+        transform.rotation = cameraPivot.rotation;
     }
 
     void KeyInput()
@@ -53,22 +64,20 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.A))
             {
-                facingDir = -1;
-                transform.Translate(-pSpeed * Time.deltaTime, 0, 0);
+                transform.Translate(Vector3.left * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.D))
             {
-                facingDir = 1;
-                transform.Translate(pSpeed * Time.deltaTime, 0, 0);
+                transform.Translate(Vector3.right * pSpeed * Time.deltaTime);
             }
             if (Input.GetKeyUp(KeyCode.Space))
             {
-                rb.AddForce(Vector2.up * pJumpForce, ForceMode2D.Impulse);
+                rb.AddForce(Vector3.up * pJumpForce, ForceMode.Impulse);
             }
 
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                rb.gravityScale = 0;
+                rb.useGravity = true;
                 playerType = PlayerType.boo;
                 Debug.Log("Tab, bomb to boo");
             }
@@ -82,32 +91,28 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.W))
             {
-                transform.Translate(0, pSpeed * Time.deltaTime, 0);
+                transform.Translate(Vector3.forward * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.A))
             {
-                facingDir = -1;
-                transform.Translate(-pSpeed * Time.deltaTime, 0, 0);
+                transform.Translate(Vector3.right * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.S))
             {
-                transform.Translate(0, -pSpeed * Time.deltaTime, 0);
+                transform.Translate(Vector3.back * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.D))
             {
-                facingDir = 1;
-                transform.Translate(pSpeed * Time.deltaTime, 0, 0);
+                transform.Translate(Vector3.right * pSpeed * Time.deltaTime);
             }
 
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                rb.gravityScale = 1;
+                rb.useGravity = false;
                 playerType = PlayerType.bomb;
                 Debug.Log("Tab, booo to bomb");
             }
         }
-        
-        pAttackPoint.localPosition = new Vector3(facingDir * 1f, 0f, 0f);
     }
 
     void AttackRange()
@@ -135,9 +140,11 @@ public class Player : MonoBehaviour
         if (playerType == PlayerType.boo) return;
         pCurrHP -= damage;
 
+        // TO-DO: 보스를 처치함과 동시에 죽었는가?
         if (pCurrHP <= 0)
         {
             Time.timeScale = 0f;
+            pLevel = 0;
         }
     }
 

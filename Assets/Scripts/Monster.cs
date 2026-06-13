@@ -19,6 +19,8 @@ public class Monster : MonoBehaviour
 
     Player player;
 
+    [SerializeField] private Transform cameraPivot;
+
     void Start()
     {
         if (monsterType == MonsterType.boss)
@@ -41,6 +43,12 @@ public class Monster : MonoBehaviour
 
     void Update()
     {
+        FollowCameraRotate();
+    }
+
+    void FollowCameraRotate()
+    {
+        transform.rotation = cameraPivot.rotation;
     }
 
     // TO-DO: 몬스터마다 데미지 다르게 들어가게 하기
