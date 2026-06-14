@@ -17,12 +17,18 @@ public class Monster : MonoBehaviour
     public float mMaxHP;
     public bool monIsDead = false;
 
+    private Rigidbody rb;
+
     Player player;
+    PlayerType playerType;
 
     [SerializeField] private Transform cameraPivot;
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+
         if (monsterType == MonsterType.boss)
         {
             mMaxHP = 1000f;
@@ -44,6 +50,15 @@ public class Monster : MonoBehaviour
     void Update()
     {
         FollowCameraRotate();
+
+        if (playerType == PlayerType.bomb && Input.GetKeyDown(KeyCode.Tab))
+        {
+            rb.useGravity = true;
+        }
+        if (playerType == PlayerType.boo && Input.GetKeyDown(KeyCode.Tab))
+        {
+            rb.useGravity = false;
+        }
     }
 
     void FollowCameraRotate()

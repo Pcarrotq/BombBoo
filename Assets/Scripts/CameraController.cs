@@ -10,6 +10,8 @@ public class CameraController : MonoBehaviour
     private float rotateSpeed = 360f;
     private bool isRotating;
 
+    private bool isTapPress = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +36,22 @@ public class CameraController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 targetRotate = cameraPivot.rotation * Quaternion.Euler(0, -90, 0);
+                StartCoroutine(RotateCamera());
+            }
+
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                isTapPress = !isTapPress;
+                
+                if (isTapPress)
+                {
+                    targetRotate = cameraPivot.rotation * Quaternion.Euler(90, 0, 0);
+                }
+                else
+                {
+                    targetRotate = cameraPivot.rotation * Quaternion.Euler(-90, 0, 0);
+                }
+
                 StartCoroutine(RotateCamera());
             }
         }
