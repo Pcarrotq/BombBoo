@@ -13,7 +13,6 @@ public class Player : MonoBehaviour
 {
     PlayerType playerType;
     Monster monster;
-    [SerializeField] private LayerMask monsterLayer;
 
     private Rigidbody rb;
     
@@ -117,9 +116,9 @@ public class Player : MonoBehaviour
 
     void AttackRange()
     {
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(pAttackPoint.position, pAttackRange, 0, monsterLayer);
+        Collider[] colliders = Physics.OverlapBox(pAttackPoint.position, pAttackRange);
 
-        foreach (Collider2D collider in colliders)
+        foreach (Collider collider in colliders)
         {
             monster = collider.GetComponent<Monster>();
 
