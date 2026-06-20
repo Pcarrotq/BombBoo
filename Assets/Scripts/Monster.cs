@@ -16,6 +16,7 @@ public class Monster : MonoBehaviour
     public float mCurHP;
     public float mMaxHP;
     public bool monIsDead = false;
+    [SerializeField] private DeathMark deathMark;
 
     private Rigidbody rb;
 
@@ -74,12 +75,21 @@ public class Monster : MonoBehaviour
 
         if (mCurHP <= 0)
         {
+            BoxCollider col = GetComponent<BoxCollider>();
             monIsDead = true;
-            Time.timeScale = 0f;
             Debug.Log("Monster is dead!");
 
+            if (monsterType == MonsterType.boss)
+            {
+                Time.timeScale = 0f;
+            }
             if (monsterType == MonsterType.spider)
             {
+                Instantiate(
+                    deathMark,
+                    new Vector3(transform.position.x, col.bounds.min.y + 0.1f, transform.position.z),
+                    Quaternion.Euler(90, 0, 0)
+                ); // transform.position, deathMark.transform.rotation
                 Destroy(gameObject);
                 player.GetExp(10);
             }

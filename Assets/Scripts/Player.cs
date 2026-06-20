@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     public float pCurrHP;
     public float pMaxHP;
     
-    int pLevel = 0;
+    int pExp = 0;
     [SerializeField] private TMP_Text pLevelText;
 
     [SerializeField] private Transform cameraPivot;
@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        pLevelText.text = $"{pLevel}";
+        pLevelText.text = $"{pExp}";
         KeyInput();
         FollowCameraRotate();
     }
@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.A))
             {
-                transform.Translate(Vector3.right * pSpeed * Time.deltaTime);
+                transform.Translate(Vector3.left * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.S))
             {
@@ -110,6 +110,15 @@ public class Player : MonoBehaviour
                 rb.useGravity = false;
                 playerType = PlayerType.bomb;
                 Debug.Log("Tab, booo to bomb");
+            }
+
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                // TO-DO: 죽음 마크 사라지기
+                DestroyDeathMark();
+                // TO-DO: 점수 깎게 만들기
+                pExp -= 5;
+                // TO-DO: 아 뭐 좋은 아이디어 있었는데 까먹었다
             }
         }
     }
@@ -134,22 +143,44 @@ public class Player : MonoBehaviour
         }
     }
 
+    void DestroyDeathMark()
+    {
+        Collider[] colliders = Physics.OverlapBox(pAttackPoint.position, pAttackRange);
+
+        foreach (Collider collider in colliders)
+        {
+            DeathMark deathMark = collider.GetComponent<DeathMark>();
+
+            if (collider.CompareTag("DeathMark"))
+            {
+                deathMark.DestroyMark();
+            }
+
+            /*if (monster != null)
+            {
+                monster.TakeDamage(pAttackForce);
+            }*/
+        }
+    }
+
     public void TakeDamage(int damage)
     {
         if (playerType == PlayerType.boo) return;
         pCurrHP -= damage;
 
+        Debug.Log("Player " + damage + "Damage!");
+
         // TO-DO: 보스를 처치함과 동시에 죽었는가?
         if (pCurrHP <= 0)
         {
             Time.timeScale = 0f;
-            pLevel = 0;
+            pExp = 0;
         }
     }
 
     public void GetExp(int exp)
     {
-        pLevel += exp;
-        Debug.Log("Player Exp = " + pLevel);
+        pExp += exp;
+        Debug.Log("Player Exp = " + pExp);
     }
 }
