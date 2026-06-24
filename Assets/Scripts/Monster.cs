@@ -30,6 +30,7 @@ public class Monster : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
+        // TO-DO: 몬스터마다 deathmark 넓이 달라지게 하기?
         if (monsterType == MonsterType.boss)
         {
             mMaxHP = 1000f;

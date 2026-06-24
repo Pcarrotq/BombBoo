@@ -3,18 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.UI;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIGame : MonoBehaviour
 {
     [SerializeField] private Player player;
     [SerializeField] private Monster monster;
+    
+    [SerializeField] private Slider hpBar;
+    [SerializeField] private Slider expBar;
+    [SerializeField] private TMP_Text pLevelText;
 
     [SerializeField] private GameObject settingPanel;
     [SerializeField] private GameObject gameClaerPanel;
     [SerializeField] private GameObject gameOverPanel;
 
+    void Start()
+    {
+        hpBar.maxValue = player.pMaxHP;
+        expBar.maxValue = player.pMaxExp;
+    }
+
     void Update()
     {
+        hpBar.value = player.pCurrHP;
+
+        expBar.value = player.pCurExp;
+        pLevelText.text = $"{player.pLevel}";
+
         GameClear();
         GameOver();
     }

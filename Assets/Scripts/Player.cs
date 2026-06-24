@@ -23,11 +23,12 @@ public class Player : MonoBehaviour
     private float pAttackForce = 10f;
     private Vector2 pAttackRange;
 
-    public float pCurrHP;
     public float pMaxHP;
+    public float pCurrHP;
     
-    int pExp = 0;
-    [SerializeField] private TMP_Text pLevelText;
+    public int pMaxExp;
+    public int pCurExp;
+    public int pLevel;
 
     [SerializeField] private Transform cameraPivot;
 
@@ -41,12 +42,15 @@ public class Player : MonoBehaviour
 
         pMaxHP = 100f;
         pCurrHP = pMaxHP;
+
+        pMaxExp = 100;
+        pCurExp = 0;
+        pLevel = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        pLevelText.text = $"{pExp}";
         KeyInput();
         FollowCameraRotate();
     }
@@ -117,7 +121,7 @@ public class Player : MonoBehaviour
                 // TO-DO: 죽음 마크 사라지기
                 DestroyDeathMark();
                 // TO-DO: 점수 깎게 만들기
-                pExp -= 5;
+                pCurExp -= 5;
                 // TO-DO: 아 뭐 좋은 아이디어 있었는데 까먹었다
             }
         }
@@ -174,13 +178,22 @@ public class Player : MonoBehaviour
         if (pCurrHP <= 0)
         {
             Time.timeScale = 0f;
-            pExp = 0;
+            pCurExp = 0;
         }
     }
 
     public void GetExp(int exp)
     {
-        pExp += exp;
-        Debug.Log("Player Exp = " + pExp);
+        pCurExp += exp;
+        Debug.Log("Player Exp = " + pCurExp);
+    }
+
+    public void SetLevel()
+    {
+        if (pCurExp == 100)
+        {
+            pCurExp = 0;
+            pLevel += 1;
+        }
     }
 }
