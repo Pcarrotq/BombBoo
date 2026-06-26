@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public enum PlayerType
-{
-    bomb,
-    boo
-}
-
 public class Player : MonoBehaviour
 {
     PlayerType playerType;
@@ -20,7 +14,7 @@ public class Player : MonoBehaviour
     private float pJumpForce = 5f;
 
     [SerializeField] private Transform pAttackPoint;
-    private float pAttackForce = 10f;
+    private float pAttackForce;
     private Vector2 pAttackRange;
 
     public float pMaxHP;
@@ -38,6 +32,7 @@ public class Player : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotation;
         playerType = PlayerType.bomb;
 
+        pAttackForce = 10f;
         pAttackRange = new Vector2(1f, 1f);
 
         pMaxHP = 100f;
@@ -167,7 +162,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         if (playerType == PlayerType.boo) return;
         pCurrHP -= damage;
