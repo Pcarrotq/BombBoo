@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Monster
   - DeathMark
+  - Ground
   layers:
   - Default
   - TransparentFX

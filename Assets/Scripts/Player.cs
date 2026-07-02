@@ -5,12 +5,17 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private SpriteRenderer sprite;
+
     PlayerType playerType;
     Monster monster;
 
     private Rigidbody rb;
+    private Animator animator;
     
     private float pSpeed = 5f;
+    private bool isGround;
+
     private float pJumpForce = 5f;
 
     [SerializeField] private Transform pAttackPoint;
@@ -28,8 +33,12 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        sprite = GetComponent<SpriteRenderer>();
+
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+        animator = GetComponent<Animator>();
+
         playerType = PlayerType.bomb;
 
         pAttackForce = 10f;
@@ -50,6 +59,24 @@ public class Player : MonoBehaviour
         FollowCameraRotate();
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGround = true;
+            animator.SetBool("IsGround", true);
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGround = true;
+            animator.SetBool("IsGround", false);
+        }
+    }
+
     void FollowCameraRotate()
     {
         transform.rotation = cameraPivot.rotation;
@@ -57,19 +84,48 @@ public class Player : MonoBehaviour
 
     void KeyInput()
     {
+        Vector3 turnRotation = Vector3.zero;
+
+        animator.SetBool("isMoving", false);
+
         // bomb으로 전환했을 때 위에서 아래로 떨어지면 hp가 깎이는 기능 추가?
         if (playerType == PlayerType.bomb)
         {
+            animator.SetBool("isPlayerBoo", false);
+
             if (Input.GetKey(KeyCode.A))
             {
+                sprite.flipX = false;
+
+                animator.SetBool("isMoving", true);
                 transform.Translate(Vector3.left * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.D))
             {
+                sprite.flipX = true;
+
+                animator.SetBool("isMoving", true);
                 transform.Translate(Vector3.right * pSpeed * Time.deltaTime);
             }
-            if (Input.GetKeyUp(KeyCode.Space))
+
+            // 점프 준비
+            // 땅에 있을 동안
+            if (Input.GetKey(KeyCode.Space) && isGround)
             {
+                animator.SetBool("isJumpReady", true);
+            }
+            // 점프하지 않는다면
+            /*else
+            {
+                animator.SetBool("isJumpReady", false);
+            }*/
+            
+            // 점프하는 동안
+            if (Input.GetKeyUp(KeyCode.Space) && isGround)
+            {
+                animator.SetBool("isJumpReady", false);
+                animator.SetBool("IsJump", true);
+
                 rb.AddForce(Vector3.up * pJumpForce, ForceMode.Impulse);
             }
 
@@ -87,20 +143,26 @@ public class Player : MonoBehaviour
         }
         else if (playerType == PlayerType.boo)
         {
+            animator.SetBool("isPlayerBoo", true);
+            
             if (Input.GetKey(KeyCode.W))
             {
+                animator.SetBool("isMoving", true);
                 transform.Translate(Vector3.forward * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.A))
             {
+                animator.SetBool("isMoving", true);
                 transform.Translate(Vector3.left * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.S))
             {
+                animator.SetBool("isMoving", true);
                 transform.Translate(Vector3.back * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.D))
             {
+                animator.SetBool("isMoving", true);
                 transform.Translate(Vector3.right * pSpeed * Time.deltaTime);
             }
 
