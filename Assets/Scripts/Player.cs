@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isGround = true;
+            isGround = false;
             animator.SetBool("IsGround", false);
         }
     }
@@ -84,15 +84,11 @@ public class Player : MonoBehaviour
 
     void KeyInput()
     {
-        Vector3 turnRotation = Vector3.zero;
-
         animator.SetBool("isMoving", false);
 
         // bomb으로 전환했을 때 위에서 아래로 떨어지면 hp가 깎이는 기능 추가?
         if (playerType == PlayerType.bomb)
         {
-            animator.SetBool("isPlayerBoo", false);
-
             if (Input.GetKey(KeyCode.A))
             {
                 sprite.flipX = false;
@@ -131,8 +127,9 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                rb.useGravity = true;
+                rb.useGravity = false; // boo일 때는 중력에 영향을 받지 않는다.
                 playerType = PlayerType.boo;
+                animator.SetBool("isBoo", true);
                 Debug.Log("Tab, bomb to boo");
             }
 
@@ -143,33 +140,34 @@ public class Player : MonoBehaviour
         }
         else if (playerType == PlayerType.boo)
         {
-            animator.SetBool("isPlayerBoo", true);
-            
             if (Input.GetKey(KeyCode.W))
             {
                 animator.SetBool("isMoving", true);
-                transform.Translate(Vector3.forward * pSpeed * Time.deltaTime);
+                transform.Translate(Vector3.up * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.A))
             {
+                sprite.flipX = false;
                 animator.SetBool("isMoving", true);
                 transform.Translate(Vector3.left * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.S))
             {
                 animator.SetBool("isMoving", true);
-                transform.Translate(Vector3.back * pSpeed * Time.deltaTime);
+                transform.Translate(Vector3.down * pSpeed * Time.deltaTime);
             }
             if (Input.GetKey(KeyCode.D))
             {
+                sprite.flipX = true;
                 animator.SetBool("isMoving", true);
                 transform.Translate(Vector3.right * pSpeed * Time.deltaTime);
             }
 
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                rb.useGravity = false;
+                rb.useGravity = true; // bomb일 때는 중력에 영향을 받는다.
                 playerType = PlayerType.bomb;
+                animator.SetBool("isBoo", false);
                 Debug.Log("Tab, booo to bomb");
             }
 

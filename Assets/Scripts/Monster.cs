@@ -72,12 +72,6 @@ public class Monster : MonoBehaviour
         
         FollowCameraRotate();
 
-        if (monsterType == MonsterType.boss)
-        {
-        }
-        if (monsterType == MonsterType.miniboss)
-        {
-        }
         if (monsterType == MonsterType.spider)
         {
             MonsterAI();
