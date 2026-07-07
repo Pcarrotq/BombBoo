@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
 {
     private SpriteRenderer sprite;
 
-    PlayerType playerType;
+    public PlayerType playerType;
     Monster monster;
 
     private Rigidbody rb;
@@ -28,6 +28,8 @@ public class Player : MonoBehaviour
     public int pMaxExp;
     public int pCurExp;
     public int pLevel;
+
+    public float booTimer;
 
     [SerializeField] private Transform cameraPivot;
 
@@ -50,6 +52,8 @@ public class Player : MonoBehaviour
         pMaxExp = 100;
         pCurExp = 0;
         pLevel = 0;
+
+        booTimer = 5f;
     }
 
     // Update is called once per frame
@@ -140,6 +144,19 @@ public class Player : MonoBehaviour
         }
         else if (playerType == PlayerType.boo)
         {
+            if (booTimer > 0)
+            {
+                booTimer -= Time.deltaTime;
+            }
+            else if (booTimer <= 0f)
+            {
+                rb.useGravity = true; // bomb일 때는 중력에 영향을 받는다.
+                playerType = PlayerType.bomb;
+                animator.SetBool("isBoo", false);
+                booTimer = 5f;
+                return;
+            }
+
             if (Input.GetKey(KeyCode.W))
             {
                 animator.SetBool("isMoving", true);
@@ -168,6 +185,7 @@ public class Player : MonoBehaviour
                 rb.useGravity = true; // bomb일 때는 중력에 영향을 받는다.
                 playerType = PlayerType.bomb;
                 animator.SetBool("isBoo", false);
+                booTimer = 5f;
                 Debug.Log("Tab, booo to bomb");
             }
 

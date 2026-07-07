@@ -12,6 +12,8 @@ public class CameraController : MonoBehaviour
 
     private bool isTapPress = false;
 
+    [SerializeField] private Player player;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -52,6 +54,12 @@ public class CameraController : MonoBehaviour
                     targetRotate = cameraPivot.rotation * Quaternion.Euler(-90, 0, 0);
                 }
 
+                StartCoroutine(RotateCamera());
+            }
+
+            if (player.booTimer <= 0)
+            {
+                targetRotate = cameraPivot.rotation * Quaternion.Euler(-90, 0, 0);
                 StartCoroutine(RotateCamera());
             }
         }

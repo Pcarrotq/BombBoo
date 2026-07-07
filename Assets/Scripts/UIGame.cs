@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.UI;
 using UnityEngine.UI;
 using TMPro;
 
 public class UIGame : MonoBehaviour
 {
     [SerializeField] private Player player;
+    PlayerType playerType;
+
     [SerializeField] private Monster monster;
     
     [SerializeField] private Slider hpBar;
     [SerializeField] private Slider expBar;
     [SerializeField] private TMP_Text pLevelText;
+
+    [SerializeField] private TMP_Text booTimer;
+    [SerializeField] private GameObject booTimerPanel;
 
     [SerializeField] private GameObject settingPanel;
     [SerializeField] private GameObject gameClaerPanel;
@@ -30,6 +34,19 @@ public class UIGame : MonoBehaviour
 
         expBar.value = player.pCurExp;
         pLevelText.text = $"{player.pLevel}";
+
+        playerType = player.playerType;
+
+        if (playerType == PlayerType.boo)
+        {
+            booTimerPanel.SetActive(true);
+        }
+        else
+        {
+            booTimerPanel.SetActive(false);
+        }
+
+        booTimer.text = $"{player.booTimer:N2}";
 
         GameClear();
         GameOver();
