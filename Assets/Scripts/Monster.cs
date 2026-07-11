@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
-    [SerializeField] private MonsterType monsterType;
+    public MonsterType monsterType;
     MonsterState monsterState;
 
     private int mAttackForce;
@@ -16,6 +16,9 @@ public class Monster : MonoBehaviour
     public float mMaxHP;
     public bool monIsDead = false;
     [SerializeField] private DeathMark deathMark;
+
+    public int mioniBossNum;
+    public int mioniBossNumMax;
 
     private Rigidbody rb;
 
@@ -32,27 +35,77 @@ public class Monster : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         // TO-DO: 몬스터마다 deathmark 넓이 달라지게 하기?
-        if (monsterType == MonsterType.boss)
+        if (GameManager.Instance.diffIndex == 1)
         {
-            mAttackForce = 10;
-            mAttackRange = 10f;
-            mMaxHP = 1000f;
+            if (monsterType == MonsterType.boss)
+            {
+                mAttackForce = 10;
+                mAttackRange = 10f;
+                mMaxHP = 1000f;
+            }
+            if (monsterType == MonsterType.miniboss)
+            {
+                mAttackForce = 5;
+                mAttackRange = 5f;
+                mMaxHP = 500f;
+            }
+            if (monsterType == MonsterType.spider)
+            {
+                mAttackForce = 1;
+                mAttackRange = 1f;
+                mDetectRange = 5f;
+                mMaxHP = 50f;
+            }
         }
-        if (monsterType == MonsterType.miniboss)
+        if (GameManager.Instance.diffIndex == 2)
         {
-            mAttackForce = 5;
-            mAttackRange = 5f;
-            mMaxHP = 500f;
+            if (monsterType == MonsterType.boss)
+            {
+                mAttackForce = 20;
+                mAttackRange = 20f;
+                mMaxHP = 2000f;
+            }
+            if (monsterType == MonsterType.miniboss)
+            {
+                mAttackForce = 10;
+                mAttackRange = 10f;
+                mMaxHP = 1000f;
+            }
+            if (monsterType == MonsterType.spider)
+            {
+                mAttackForce = 5;
+                mAttackRange = 5f;
+                mDetectRange = 10f;
+                mMaxHP = 100f;
+            }
         }
-        if (monsterType == MonsterType.spider)
+        if (GameManager.Instance.diffIndex == 3)
         {
-            mAttackForce = 1;
-            mAttackRange = 1f;
-            mDetectRange = 5f;
-            mMaxHP = 50f;
+            if (monsterType == MonsterType.boss)
+            {
+                mAttackForce = 30;
+                mAttackRange = 30f;
+                mMaxHP = 3000f;
+            }
+            if (monsterType == MonsterType.miniboss)
+            {
+                mAttackForce = 20;
+                mAttackRange = 20f;
+                mMaxHP = 2000f;
+            }
+            if (monsterType == MonsterType.spider)
+            {
+                mAttackForce = 10;
+                mAttackRange = 10f;
+                mDetectRange = 20f;
+                mMaxHP = 200f;
+            }
         }
 
         mCurHP = mMaxHP;
+
+        mioniBossNum = mioniBossNumMax;
+        mioniBossNumMax = 4;
 
         player = FindObjectOfType<Player>();
         playerTrf = player.transform;
@@ -72,6 +125,13 @@ public class Monster : MonoBehaviour
         
         FollowCameraRotate();
 
+        if (monsterType == MonsterType.miniboss)
+        {
+            if (mCurHP <= 0)
+            {
+                mioniBossNum -= 1;
+            }
+        }
         if (monsterType == MonsterType.spider)
         {
             MonsterAI();

@@ -14,6 +14,7 @@ public class UIGame : MonoBehaviour
     [SerializeField] private Slider hpBar;
     [SerializeField] private Slider expBar;
     [SerializeField] private TMP_Text pLevelText;
+    [SerializeField] private Slider absorptionBar;
 
     [SerializeField] private TMP_Text booTimer;
     [SerializeField] private GameObject booTimerPanel;
@@ -26,6 +27,7 @@ public class UIGame : MonoBehaviour
     {
         hpBar.maxValue = player.pMaxHP;
         expBar.maxValue = player.pMaxExp;
+        absorptionBar.maxValue = player.pAbsorption;
     }
 
     void Update()
@@ -34,6 +36,7 @@ public class UIGame : MonoBehaviour
 
         expBar.value = player.pCurExp;
         pLevelText.text = $"{player.pLevel}";
+        absorptionBar.value = player.pAbsorptionLimit;
 
         playerType = player.playerType;
 
@@ -48,7 +51,7 @@ public class UIGame : MonoBehaviour
 
         booTimer.text = $"{player.booTimer:N2}";
 
-        GameClear();
+        //GameClear();
         GameOver();
     }
 
@@ -66,7 +69,7 @@ public class UIGame : MonoBehaviour
 
     public void GameClear()
     {
-        if (monster.mCurHP <= 0 && player.pCurrHP > 0)
+        if (monster.monsterType == MonsterType.boss && monster.mCurHP <= 0 && player.pCurrHP > 0)
         {
             gameClaerPanel.SetActive(true);
             Time.timeScale = 0f;
@@ -86,6 +89,7 @@ public class UIGame : MonoBehaviour
     {
         player.pCurrHP = player.pMaxHP;
         monster.mCurHP = monster.mMaxHP;
+        monster.mioniBossNum = monster.mioniBossNumMax;
         gameClaerPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         Time.timeScale = 1f;

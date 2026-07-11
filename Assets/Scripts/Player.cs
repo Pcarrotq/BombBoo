@@ -29,6 +29,11 @@ public class Player : MonoBehaviour
     public int pCurExp;
     public int pLevel;
 
+    public int pAbsorption; // 현재 흡수한 양
+    private int pAbsorptionAmount; // 흡수량
+    public int pAbsorptionLimit; // 흡수 한계량
+    private int pAbsorptionLow; // 흡수 내보내기
+
     public float booTimer;
 
     [SerializeField] private Transform cameraPivot;
@@ -52,6 +57,11 @@ public class Player : MonoBehaviour
         pMaxExp = 100;
         pCurExp = 0;
         pLevel = 0;
+
+        pAbsorption = 0;
+        pAbsorptionAmount = 10;
+        pAbsorptionLimit = 100;
+        pAbsorptionLow = 10;
 
         booTimer = 5f;
     }
@@ -193,9 +203,27 @@ public class Player : MonoBehaviour
             {
                 // TO-DO: 죽음 마크 사라지기
                 DestroyDeathMark();
+                
                 // TO-DO: 점수 깎게 만들기
                 pCurExp -= 5;
+                
                 // TO-DO: 아 뭐 좋은 아이디어 있었는데 까먹었다
+                
+                // 다른 것
+                // 죽음 마크 흡수하기
+                pAbsorption += pAbsorptionAmount;
+                if (pAbsorption >= pAbsorptionLimit) // 죽음 마크 흡수량을 한계치보다 많이 흡수하면
+                {
+                    while (pCurrHP == 0) // hp가 다 깎일 때까지 플레이어에게 데미지 주기
+                    {
+                        TakeDamage(10);
+                    }
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                // Q 키를 눌러 죽음 마크 흡수 낮추기
+                pAbsorption -= pAbsorptionLow;
             }
         }
     }
