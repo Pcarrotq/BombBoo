@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UIGame : MonoBehaviour
+public class UIGameBossBattle : MonoBehaviour
 {
     [SerializeField] private Player player;
     PlayerType playerType;
@@ -53,6 +53,11 @@ public class UIGame : MonoBehaviour
 
         //GameClear();
         GameOver();
+    }
+
+    public void OnClickSkill(int skillNumber)
+    {
+        player.UseSkill(skillNumber);
     }
 
     public void SettingPanelOpen()

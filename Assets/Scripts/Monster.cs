@@ -167,7 +167,7 @@ public class Monster : MonoBehaviour
                     Quaternion.Euler(90, 0, 0)
                 ); // transform.position, deathMark.transform.rotation
                 Destroy(gameObject);
-                player.GetExp(10);
+                player.GetExp(100);
             }
         }
     }
