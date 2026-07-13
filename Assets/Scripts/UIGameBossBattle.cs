@@ -13,7 +13,6 @@ public class UIGameBossBattle : MonoBehaviour
     
     [SerializeField] private Slider hpBar;
     [SerializeField] private Slider expBar;
-    [SerializeField] private TMP_Text pLevelText;
     [SerializeField] private Slider absorptionBar;
 
     [SerializeField] private TMP_Text booTimer;
@@ -33,9 +32,7 @@ public class UIGameBossBattle : MonoBehaviour
     void Update()
     {
         hpBar.value = player.pCurrHP;
-
-        expBar.value = player.pCurExp;
-        pLevelText.text = $"{player.pLevel}";
+        expBar.value = player.pCurrExp;
         absorptionBar.value = player.pAbsorptionLimit;
 
         playerType = player.playerType;

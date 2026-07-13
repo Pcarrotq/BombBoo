@@ -7,6 +7,9 @@ public class Monster : MonoBehaviour
     public MonsterType monsterType;
     MonsterState monsterState;
 
+    private bool isReleased;
+    private float releaseRange;
+
     private int mAttackForce;
     public float mAttackRange;
 
@@ -23,7 +26,6 @@ public class Monster : MonoBehaviour
     private Rigidbody rb;
 
     Player player;
-    PlayerType playerType;
     float target;
     Transform playerTrf;
 
@@ -31,6 +33,9 @@ public class Monster : MonoBehaviour
 
     void Start()
     {
+        isReleased = false;
+        releaseRange = 3f;
+
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
@@ -48,6 +53,13 @@ public class Monster : MonoBehaviour
                 mAttackForce = 5;
                 mAttackRange = 5f;
                 mMaxHP = 500f;
+            }
+            if (monsterType == MonsterType.sealMonster)
+            {
+                mAttackForce = 4;
+                mAttackRange = 4f;
+                mDetectRange = 6f;
+                mMaxHP = 400f;
             }
             if (monsterType == MonsterType.spider)
             {
@@ -71,6 +83,13 @@ public class Monster : MonoBehaviour
                 mAttackRange = 10f;
                 mMaxHP = 1000f;
             }
+            if (monsterType == MonsterType.sealMonster)
+            {
+                mAttackForce = 9;
+                mAttackRange = 9f;
+                mDetectRange = 11f;
+                mMaxHP = 500f;
+            }
             if (monsterType == MonsterType.spider)
             {
                 mAttackForce = 5;
@@ -93,6 +112,13 @@ public class Monster : MonoBehaviour
                 mAttackRange = 20f;
                 mMaxHP = 2000f;
             }
+            if (monsterType == MonsterType.sealMonster)
+            {
+                mAttackForce = 15;
+                mAttackRange = 15f;
+                mDetectRange = 25f;
+                mMaxHP = 1000f;
+            }
             if (monsterType == MonsterType.spider)
             {
                 mAttackForce = 10;
@@ -109,16 +135,24 @@ public class Monster : MonoBehaviour
 
         player = FindObjectOfType<Player>();
         playerTrf = player.transform;
+
+        // 봉인된 동안 움직이지 않도록 한다.
+        if (monsterType == MonsterType.sealMonster)
+        {
+            rb.isKinematic = true;
+            rb.useGravity = false;
+        }
+
         monsterState = MonsterState.Idle;
     }
 
     void Update()
     {
-        if (playerType == PlayerType.bomb && Input.GetKeyDown(KeyCode.Tab))
+        if (player.playerType == PlayerType.bomb && Input.GetKeyDown(KeyCode.Tab))
         {
             rb.useGravity = true;
         }
-        if (playerType == PlayerType.boo && Input.GetKeyDown(KeyCode.Tab))
+        if (player.playerType == PlayerType.boo && Input.GetKeyDown(KeyCode.Tab))
         {
             rb.useGravity = false;
         }
@@ -131,6 +165,38 @@ public class Monster : MonoBehaviour
             {
                 mioniBossNum -= 1;
             }
+        }
+        if (monsterType == MonsterType.sealMonster)
+        {
+            if (!isReleased)
+            {
+                float distance = Vector3.Distance(transform.position, playerTrf.position);
+
+                if (distance <= releaseRange && player.playerType == PlayerType.boo && Input.GetKeyDown(KeyCode.Q))
+                {
+                    if (player.pCurrExp >= player.needExp)
+                    {
+                        player.pCurrExp -= player.needExp;
+
+                        isReleased = true;
+
+                        rb.isKinematic = false;
+                        rb.useGravity = true;
+
+                        monsterState = MonsterState.Idle;
+
+                        Debug.Log("봉인이 해제되었습니다!");
+                    }
+                    else
+                    {
+                        Debug.Log("Exp가 부족합니다.");
+                    }
+                }
+            }
+        }
+        if (monsterType == MonsterType.sealMonster && isReleased)
+        {
+            MonsterAI();
         }
         if (monsterType == MonsterType.spider)
         {
@@ -229,6 +295,14 @@ public class Monster : MonoBehaviour
                 }
 
                 break;
+        }
+    }
+
+    void SealMonster()
+    {
+        if (monsterType == MonsterType.sealMonster)
+        {
+            
         }
     }
 }

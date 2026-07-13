@@ -35,8 +35,7 @@ public class UIGameScore : MonoBehaviour
     void Update()
     {
         hpBar.value = player.pCurrHP;
-        expBar.value = player.pCurExp;
-        pLevelText.text = $"{player.pLevel}";
+        expBar.value = player.pCurrExp;
         absorptionBar.value = player.pAbsorptionLimit;
 
         playerType = player.playerType;

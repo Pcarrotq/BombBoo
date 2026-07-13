@@ -29,8 +29,9 @@ public class Player : MonoBehaviour
     public float pCurrHP;
     
     public int pMaxExp;
-    public int pCurExp;
-    public int pLevel;
+    public int pCurrExp;
+
+    public int needExp;
 
     public int pAbsorption; // 현재 흡수한 양
     private int pAbsorptionAmount; // 흡수량
@@ -40,7 +41,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform cameraPivot;
 
     public float booTimer;
-    [SerializeField] UIGameScore uiGameScore;
+    [SerializeField] private UIGameScore uiGameScore;
 
     void Start()
     {
@@ -66,8 +67,9 @@ public class Player : MonoBehaviour
         pCurrHP = pMaxHP;
 
         pMaxExp = 100;
-        pCurExp = 0;
-        pLevel = 0;
+        pCurrExp = 0;
+
+        needExp = 100;
 
         pAbsorption = 0;
         pAbsorptionAmount = 10;
@@ -76,7 +78,10 @@ public class Player : MonoBehaviour
 
         booTimer = 5f;
 
-        AttackSkill();
+        if (GameManager.Instance.modeIndex == 2)
+        {
+            AttackSkill();
+        }
     }
 
     // Update is called once per frame
@@ -84,6 +89,15 @@ public class Player : MonoBehaviour
     {
         KeyInput();
         FollowCameraRotate();
+
+        if (GameManager.Instance.modeIndex == 2 && pCurrExp >= pMaxExp)
+        {
+            AttackSkill();
+            return;
+        }
+
+        Debug.Log("curr exp = " + pCurrExp);
+        Debug.Log("need exp = " + needExp);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -218,7 +232,7 @@ public class Player : MonoBehaviour
                 DestroyDeathMark();
                 
                 // TO-DO: 점수 깎게 만들기
-                pCurExp -= 5;
+                pCurrExp -= 5;
                 
                 // TO-DO: 아 뭐 좋은 아이디어 있었는데 까먹었다
                 
@@ -349,29 +363,13 @@ public class Player : MonoBehaviour
         if (pCurrHP <= 0)
         {
             Time.timeScale = 0f;
-            pCurExp = 0;
+            pCurrExp = 0;
         }
     }
 
     public void GetExp(int exp)
     {
-        pCurExp += exp;
-        Debug.Log("Player Exp = " + pCurExp);
-
-        if (pCurExp >= pMaxExp)
-        {
-            SetLevel();
-            pCurExp = 0;
-        }
-    }
-
-    void SetLevel()
-    {
-        if (pCurExp == 100)
-        {
-            pCurExp = 0;
-            pLevel++;
-            AttackSkill();
-        }
+        pCurrExp += exp;
+        Debug.Log("Player Exp = " + pCurrExp);
     }
 }
