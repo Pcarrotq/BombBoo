@@ -91,7 +91,7 @@ public class UIGameBossBattle : MonoBehaviour
     {
         player.pCurrHP = player.pMaxHP;
         monster.mCurHP = monster.mMaxHP;
-        monster.mioniBossNum = monster.mioniBossNumMax;
+        monster.miniBossNum = monster.miniBossNumMax;
         gameClaerPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         Time.timeScale = 1f;

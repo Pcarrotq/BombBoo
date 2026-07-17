@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     private Vector2 pAttackRange;
     private int pAttackSkillNum;
     public int[] pAttackSkillNums;
-    private List<int> pAttackSkills;
+    public List<int> pAttackSkills;
 
     public float pMaxHP;
     public float pCurrHP;

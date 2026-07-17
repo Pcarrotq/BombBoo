@@ -603,6 +603,7 @@ MonoBehaviour:
   playerType: 0
   pAttackPoint: {fileID: 507794370}
   pAttackSkillNums: 
+  pScore: 0
   pMaxHP: 0
   pCurrHP: 0
   pMaxExp: 0
@@ -2730,7 +2731,6 @@ MonoBehaviour:
   monster: {fileID: 0}
   hpBar: {fileID: 1335136450}
   expBar: {fileID: 1141244871}
-  pLevelText: {fileID: 0}
   absorptionBar: {fileID: 1418926307}
   booTimer: {fileID: 28371942}
   booTimerPanel: {fileID: 817015732}

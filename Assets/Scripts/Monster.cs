@@ -20,8 +20,8 @@ public class Monster : MonoBehaviour
     public bool monIsDead = false;
     [SerializeField] private DeathMark deathMark;
 
-    public int mioniBossNum;
-    public int mioniBossNumMax;
+    public int miniBossNum;
+    public int miniBossNumMax;
 
     private Rigidbody rb;
 
@@ -130,8 +130,8 @@ public class Monster : MonoBehaviour
 
         mCurHP = mMaxHP;
 
-        mioniBossNum = mioniBossNumMax;
-        mioniBossNumMax = 4;
+        miniBossNum = miniBossNumMax;
+        miniBossNumMax = 4;
 
         player = FindObjectOfType<Player>();
         playerTrf = player.transform;
@@ -163,7 +163,7 @@ public class Monster : MonoBehaviour
         {
             if (mCurHP <= 0)
             {
-                mioniBossNum -= 1;
+                miniBossNum -= 1;
             }
         }
         if (monsterType == MonsterType.sealMonster)
