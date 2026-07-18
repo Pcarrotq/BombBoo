@@ -204,6 +204,11 @@ public class Monster : MonoBehaviour
         }
     }
 
+    public void SetCameraPivot(Transform pivot)
+    {
+        cameraPivot = pivot;
+    }
+
     void FollowCameraRotate()
     {
         transform.rotation = cameraPivot.rotation;
