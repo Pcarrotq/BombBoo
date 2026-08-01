@@ -9,7 +9,7 @@ public class UIGameScore : MonoBehaviour
     [SerializeField] private Player player;
     PlayerType playerType;
 
-    [SerializeField] private Monster monster;
+    private Monster monster;
     
     [SerializeField] private Slider hpBar;
     [SerializeField] private Slider expBar;
@@ -34,6 +34,8 @@ public class UIGameScore : MonoBehaviour
 
     void Update()
     {
+        monster = FindObjectOfType<Monster>();
+        
         hpBar.value = player.pCurrHP;
         expBar.value = player.pCurrExp;
         absorptionBar.value = player.pAbsorptionLimit;
@@ -67,14 +69,20 @@ public class UIGameScore : MonoBehaviour
         // 현재 가진 스킬만 활성
         foreach (int skill in player.pAttackSkillNums)
         {
-            skillButtons[skill - 1].interactable = true;
+            if (skill < 0 || skill >= skillButtons.Length) continue;
+
+            skillButtons[skill].interactable = true;
+
+            int skillIndex = skill;
+            skillButtons[skill].onClick.AddListener(() =>
+            player.UseSkill(skillIndex));
         }
     }
 
-    public void OnClickSkill(int skillNumber)
+    /*public void OnClickSkill(int skillNumber)
     {
-        player.UseSkill(skillNumber);
-    }
+        player.UseSkill(player.pAttackSkillNums[skillNumber]);
+    }*/
 
     public void SettingPanelOpen()
     {

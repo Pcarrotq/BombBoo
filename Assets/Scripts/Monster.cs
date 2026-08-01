@@ -38,6 +38,7 @@ public class Monster : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+        rb.useGravity = true;
 
         // TO-DO: 몬스터마다 deathmark 넓이 달라지게 하기?
         if (GameManager.Instance.diffIndex == 1)
@@ -148,14 +149,14 @@ public class Monster : MonoBehaviour
 
     void Update()
     {
-        if (player.playerType == PlayerType.bomb && Input.GetKeyDown(KeyCode.Tab))
+        /*if (player.playerType == PlayerType.bomb && Input.GetKeyDown(KeyCode.Tab))
         {
             rb.useGravity = true;
         }
         if (player.playerType == PlayerType.boo && Input.GetKeyDown(KeyCode.Tab))
         {
             rb.useGravity = false;
-        }
+        }*/
         
         FollowCameraRotate();
 
@@ -174,6 +175,7 @@ public class Monster : MonoBehaviour
 
                 if (distance <= releaseRange && player.playerType == PlayerType.boo && Input.GetKeyDown(KeyCode.Q))
                 {
+                    Debug.Log("Input Key Q");
                     if (player.pCurrExp >= player.needExp)
                     {
                         player.pCurrExp -= player.needExp;
@@ -268,7 +270,8 @@ public class Monster : MonoBehaviour
                 Debug.Log("Monster Chase");
 
                 Vector3 dir = (playerTrf.position - transform.position).normalized;
-                transform.position += dir * Time.deltaTime * 2f;
+                //transform.position += dir * Time.deltaTime * 2f;
+                rb.MovePosition(rb.position + dir * Time.deltaTime * 2f);
                 
                 // 범위에서 나가면
                 if (target > mDetectRange)
@@ -300,14 +303,6 @@ public class Monster : MonoBehaviour
                 }
 
                 break;
-        }
-    }
-
-    void SealMonster()
-    {
-        if (monsterType == MonsterType.sealMonster)
-        {
-            
         }
     }
 }

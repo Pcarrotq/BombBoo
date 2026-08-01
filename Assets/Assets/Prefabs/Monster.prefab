@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88e15d0dd5eee9b459aa12abe6d966b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterType: 2
+  monsterType: 3
   mAttackRange: 0
   mCurHP: 0
   mMaxHP: 0

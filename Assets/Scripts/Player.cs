@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
 
     [SerializeField] private Transform pAttackPoint;
     private float pAttackForce;
-    private Vector2 pAttackRange;
+    private Vector3 pAttackRange;
     private int pAttackSkillNum;
     public int[] pAttackSkillNums;
     public List<int> pAttackSkills;
@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
         playerType = PlayerType.bomb;
 
         pAttackForce = 10f;
-        pAttackRange = new Vector2(1f, 1f);
+        pAttackRange = new Vector3(2f, 2f, 2f);
         pAttackSkillNums = new int[3];
         pAttackSkills = new List<int>();
 
