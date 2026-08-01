@@ -338,7 +338,7 @@ public class Player : MonoBehaviour
 
         foreach (Collider collider in colliders)
         {
-            DeathMark deathMark = collider.GetComponent<DeathMark>();
+            MonsterDeathMark deathMark = collider.GetComponent<MonsterDeathMark>();
 
             if (collider.CompareTag("DeathMark"))
             {

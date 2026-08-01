@@ -12,13 +12,15 @@ public class Monster : MonoBehaviour
 
     private int mAttackForce;
     public float mAttackRange;
+    private float mAttackTime;
+    private float mAttackTick;
 
     float mDetectRange;
 
     public float mCurHP;
     public float mMaxHP;
     public bool monIsDead = false;
-    [SerializeField] private DeathMark deathMark;
+    [SerializeField] private MonsterDeathMark deathMark;
 
     public int miniBossNum;
     public int miniBossNumMax;
@@ -39,6 +41,9 @@ public class Monster : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
         rb.useGravity = true;
+
+        mAttackTime = 0f;
+        mAttackTick = 1f;
 
         // TO-DO: 몬스터마다 deathmark 넓이 달라지게 하기?
         if (GameManager.Instance.diffIndex == 1)
@@ -295,7 +300,11 @@ public class Monster : MonoBehaviour
 
                 if (target < mAttackRange)
                 {
-                    player.TakeDamage(mAttackForce);
+                    if (Time.time >= mAttackTime)
+                    {
+                        player.TakeDamage(mAttackForce);
+                        mAttackTime = Time.time + mAttackTick;
+                    }
                 }
                 else
                 {
