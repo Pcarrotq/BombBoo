@@ -374,19 +374,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 37655819}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 7
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &37655819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1086,19 +1074,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 124190607}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 5
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &124190607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1251,7 +1227,7 @@ MonoBehaviour:
   pAbsorptionLimit: 0
   cameraPivot: {fileID: 334758230}
   booTimer: 0
-  uiGameScore: {fileID: 0}
+  uiGameScore: {fileID: 544359729}
 --- !u!65 &137856373
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2137,19 +2113,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 385545876}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 2
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &385545876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2345,19 +2309,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 431257042}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 6
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &431257042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2727,7 +2679,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 137856372}
-  monster: {fileID: 0}
   hpBar: {fileID: 1335136450}
   expBar: {fileID: 1141244871}
   pLevelText: {fileID: 975536510}
@@ -2980,19 +2931,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 739407679}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 9
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &739407679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3113,19 +3052,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 742189667}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 3
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &742189667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3588,19 +3515,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 841160868}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &841160868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3891,19 +3806,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 897439444}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 8
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &897439444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5338,19 +5241,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1489455141}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 4
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1489455141
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7419,19 +7310,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1988424552}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 544359729}
-        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
-        m_MethodName: OnClickSkill
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1988424552
 MonoBehaviour:
   m_ObjectHideFlags: 0

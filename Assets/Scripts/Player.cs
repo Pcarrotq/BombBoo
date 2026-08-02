@@ -90,11 +90,11 @@ public class Player : MonoBehaviour
         KeyInput();
         FollowCameraRotate();
 
-        if (GameManager.Instance.modeIndex == 2 && pCurrExp >= pMaxExp)
+        /*if (GameManager.Instance.modeIndex == 2 && pCurrExp >= pMaxExp && !isSkillChoose)
         {
             AttackSkill();
             return;
-        }
+        }*/
 
         Debug.Log("curr exp = " + pCurrExp);
         Debug.Log("need exp = " + needExp);
@@ -241,16 +241,23 @@ public class Player : MonoBehaviour
                 pAbsorption += pAbsorptionAmount;
                 if (pAbsorption >= pAbsorptionLimit) // 죽음 마크 흡수량을 한계치보다 많이 흡수하면
                 {
-                    while (pCurrHP == 0) // hp가 다 깎일 때까지 플레이어에게 데미지 주기
+                    while (pCurrHP > 0) // hp가 다 깎일 때까지 플레이어에게 데미지 주기
                     {
                         TakeDamage(10);
                     }
+
+                    // 한계치 트리거 후 흡수량을 리셋하지 않으면
+                    // 다음 프레임에도 계속 조건을 만족해서 반복 실행한다.
+                    pAbsorption = 0;
                 }
             }
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 // Q 키를 눌러 죽음 마크 흡수 낮추기
                 pAbsorption -= pAbsorptionLow;
+
+                // 흡슈량이 음수로 내려가지 않도록
+                if (pAbsorption < 0) pAbsorption = 0;
             }
         }
     }
@@ -330,6 +337,8 @@ public class Player : MonoBehaviour
                 Debug.Log("스킬 10");
                 break;
         }
+
+        AttackSkill();
     }
 
     void DestroyDeathMark()
@@ -342,7 +351,7 @@ public class Player : MonoBehaviour
 
             if (collider.CompareTag("DeathMark"))
             {
-                deathMark.DestroyMark();
+                if (deathMark != null) deathMark.DestroyMark();
             }
 
             /*if (monster != null)
@@ -354,7 +363,6 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        if (playerType == PlayerType.boo) return;
         pCurrHP -= damage;
 
         Debug.Log("Player " + damage + "Damage!");

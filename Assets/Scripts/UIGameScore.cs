@@ -22,14 +22,16 @@ public class UIGameScore : MonoBehaviour
     [SerializeField] private GameObject booTimerPanel;
 
     [SerializeField] private GameObject settingPanel;
-    [SerializeField] private GameObject gameClaerPanel;
+    [SerializeField] private GameObject gameClearPanel;
     [SerializeField] private GameObject gameOverPanel;
 
     void Start()
     {
         hpBar.maxValue = player.pMaxHP;
         expBar.maxValue = player.pMaxExp;
-        absorptionBar.maxValue = player.pAbsorption;
+        absorptionBar.maxValue = player.pAbsorptionLimit;
+        
+        SkillButtons();
     }
 
     void Update()
@@ -38,7 +40,7 @@ public class UIGameScore : MonoBehaviour
         
         hpBar.value = player.pCurrHP;
         expBar.value = player.pCurrExp;
-        absorptionBar.value = player.pAbsorptionLimit;
+        absorptionBar.value = player.pAbsorption;
 
         playerType = player.playerType;
 
@@ -55,27 +57,32 @@ public class UIGameScore : MonoBehaviour
 
         //GameClear();
         GameOver();
-        SkillButtons();
     }
 
     public void SkillButtons()
     {
+        Debug.Log("SkillButtons");
+
         // 모든 버튼 비활성화
         for (int i = 0; i < skillButtons.Length; i++)
         {
             skillButtons[i].interactable = false;
+            skillButtons[i].onClick.RemoveAllListeners();
         }
         
         // 현재 가진 스킬만 활성
         foreach (int skill in player.pAttackSkillNums)
         {
-            if (skill < 0 || skill >= skillButtons.Length) continue;
+            int skillBtn = skill - 1;
 
-            skillButtons[skill].interactable = true;
+            if (skillBtn < 0 || skillBtn >= skillButtons.Length) continue;
 
-            int skillIndex = skill;
-            skillButtons[skill].onClick.AddListener(() =>
-            player.UseSkill(skillIndex));
+            skillButtons[skillBtn].interactable = true;
+
+            int skillNum = skill;
+
+            skillButtons[skillBtn].onClick.AddListener(() =>
+                player.UseSkill(skillNum));
         }
     }
 
@@ -96,14 +103,14 @@ public class UIGameScore : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    public void GameClear()
+    /*public void GameClear()
     {
         if (monster.monsterType == MonsterType.boss && monster.mCurHP <= 0 && player.pCurrHP > 0)
         {
-            gameClaerPanel.SetActive(true);
+            gameClearPanel.SetActive(true);
             Time.timeScale = 0f;
         }
-    }
+    }*/
 
     public void GameOver()
     {
@@ -119,7 +126,7 @@ public class UIGameScore : MonoBehaviour
         player.pCurrHP = player.pMaxHP;
         monster.mCurHP = monster.mMaxHP;
         monster.miniBossNum = monster.miniBossNumMax;
-        gameClaerPanel.SetActive(false);
+        gameClearPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         Time.timeScale = 1f;
     }

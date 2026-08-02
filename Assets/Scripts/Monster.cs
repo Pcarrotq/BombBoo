@@ -25,6 +25,8 @@ public class Monster : MonoBehaviour
     public int miniBossNum;
     public int miniBossNumMax;
 
+    private bool isminibossCounted;
+
     private Rigidbody rb;
 
     Player player;
@@ -136,8 +138,10 @@ public class Monster : MonoBehaviour
 
         mCurHP = mMaxHP;
 
-        miniBossNum = miniBossNumMax;
         miniBossNumMax = 4;
+        miniBossNum = miniBossNumMax;
+
+        isminibossCounted = false;
 
         player = FindObjectOfType<Player>();
         playerTrf = player.transform;
@@ -167,7 +171,7 @@ public class Monster : MonoBehaviour
 
         if (monsterType == MonsterType.miniboss)
         {
-            if (mCurHP <= 0)
+            if (mCurHP <= 0 && !isminibossCounted)
             {
                 miniBossNum -= 1;
             }
@@ -224,6 +228,8 @@ public class Monster : MonoBehaviour
     // TO-DO: 몬스터마다 데미지 다르게 들어가게 하기
     public void TakeDamage(float damage)
     {
+        if (monIsDead) return;
+
         mCurHP -= damage;
         Debug.Log("Damaged! Now Monster's HP is " + mCurHP);
 
@@ -252,7 +258,7 @@ public class Monster : MonoBehaviour
 
     void MonsterAI()
     {
-        target = Vector2.Distance(transform.position, playerTrf.position);
+        target = Vector3.Distance(transform.position, playerTrf.position);
 
         switch (monsterState)
         {
@@ -298,7 +304,7 @@ public class Monster : MonoBehaviour
             case MonsterState.Attack:
                 Debug.Log("Monster Attack");
 
-                if (target < mAttackRange)
+                if (target < mAttackRange && player.playerType == PlayerType.bomb)
                 {
                     if (Time.time >= mAttackTime)
                     {
