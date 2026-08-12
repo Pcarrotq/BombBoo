@@ -78,7 +78,7 @@ public class Player : MonoBehaviour
 
         booTimer = 5f;
 
-        if (GameManager.Instance.modeIndex == 2)
+        if (uiGameScore != null || (GameManager.Instance != null && GameManager.Instance.modeIndex == 2))
         {
             AttackSkill();
         }
@@ -106,6 +106,7 @@ public class Player : MonoBehaviour
         {
             isGround = true;
             animator.SetBool("IsGround", true);
+            animator.SetBool("IsJump", false);
         }
     }
 
@@ -270,7 +271,7 @@ public class Player : MonoBehaviour
         {
             monster = collider.GetComponent<Monster>();
 
-            if (collider.CompareTag("Monster"))
+            if (collider.CompareTag("Monster") && monster != null)
             {
                 monster.TakeDamage(pAttackForce);
             }
@@ -378,6 +379,11 @@ public class Player : MonoBehaviour
     public void GetExp(int exp)
     {
         pCurrExp += exp;
+        if (uiGameScore != null)
+        {
+            AttackSkill();
+        }
+
         Debug.Log("Player Exp = " + pCurrExp);
     }
 }

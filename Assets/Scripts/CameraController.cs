@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -15,8 +14,20 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Player player;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        if (cameraPivot == null)
+        {
+            Debug.LogError("Camera Pivot is not assigned.", this);
+            enabled = false;
+            return;
+        }
+
+        if (player == null)
+        {
+            player = FindFirstObjectByType<Player>();
+        }
+
         targetRotate = cameraPivot.rotation;
     }
 
@@ -57,8 +68,9 @@ public class CameraController : MonoBehaviour
                 StartCoroutine(RotateCamera());
             }
 
-            if (player.booTimer <= 0)
+            if (isTapPress && player != null && player.playerType == PlayerType.bomb)
             {
+                isTapPress = false;
                 targetRotate = cameraPivot.rotation * Quaternion.Euler(-90, 0, 0);
                 StartCoroutine(RotateCamera());
             }

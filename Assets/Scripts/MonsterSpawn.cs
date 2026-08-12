@@ -10,12 +10,20 @@ public class MonsterSpawn : MonoBehaviour
     private int maxMonster;
     private int currMonster;
     private Vector3 randomPos;
+    private readonly List<Monster> spawnedMonsters = new List<Monster>();
 
     private float spawnTime;
 
     // Start is called before the first frame update
     void Start()
     {
+        if (monster == null || cameraPivot == null)
+        {
+            Debug.LogError("Monster prefab or Camera Pivot is not assigned.", this);
+            enabled = false;
+            return;
+        }
+
         maxMonster = 20;
         currMonster = 0;
 
@@ -30,6 +38,9 @@ public class MonsterSpawn : MonoBehaviour
 
     void SpawnMonster()
     {
+        spawnedMonsters.RemoveAll(spawnedMonster => spawnedMonster == null);
+        currMonster = spawnedMonsters.Count;
+
         if (currMonster >= maxMonster) return;
 
         randomPos = new Vector3(
@@ -40,13 +51,15 @@ public class MonsterSpawn : MonoBehaviour
         GameObject obj = Instantiate(monster, randomPos, Quaternion.identity);
 
         Monster m = obj.GetComponent<Monster>();
+        if (m == null)
+        {
+            Debug.LogError("Monster prefab does not contain a Monster component.", obj);
+            Destroy(obj);
+            return;
+        }
+
         m.SetCameraPivot(cameraPivot);
-
-        currMonster++;
-    }
-
-    void DeadMonster()
-    {
-        currMonster--;
+        spawnedMonsters.Add(m);
+        currMonster = spawnedMonsters.Count;
     }
 }

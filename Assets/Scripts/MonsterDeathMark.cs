@@ -19,7 +19,8 @@ public class MonsterDeathMark : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Player player = other.GetComponent<Player>();
+            Player player = other.GetComponentInParent<Player>();
+            if (player == null) return;
             
             if (Time.time >= mdAttackTime)
             {

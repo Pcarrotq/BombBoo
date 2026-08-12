@@ -48,7 +48,11 @@ public class Monster : MonoBehaviour
         mAttackTick = 1f;
 
         // TO-DO: 몬스터마다 deathmark 넓이 달라지게 하기?
-        if (GameManager.Instance.diffIndex == 1)
+        int difficulty = GameManager.Instance != null
+            ? Mathf.Clamp(GameManager.Instance.diffIndex, 1, 3)
+            : 1;
+
+        if (difficulty == 1)
         {
             if (monsterType == MonsterType.boss)
             {
@@ -77,7 +81,7 @@ public class Monster : MonoBehaviour
                 mMaxHP = 50f;
             }
         }
-        if (GameManager.Instance.diffIndex == 2)
+        if (difficulty == 2)
         {
             if (monsterType == MonsterType.boss)
             {
@@ -106,7 +110,7 @@ public class Monster : MonoBehaviour
                 mMaxHP = 100f;
             }
         }
-        if (GameManager.Instance.diffIndex == 3)
+        if (difficulty == 3)
         {
             if (monsterType == MonsterType.boss)
             {
@@ -143,7 +147,14 @@ public class Monster : MonoBehaviour
 
         isminibossCounted = false;
 
-        player = FindObjectOfType<Player>();
+        player = FindFirstObjectByType<Player>();
+        if (player == null || cameraPivot == null)
+        {
+            Debug.LogError("Player or Camera Pivot is not assigned.", this);
+            enabled = false;
+            return;
+        }
+
         playerTrf = player.transform;
 
         // 봉인된 동안 움직이지 않도록 한다.
@@ -174,6 +185,7 @@ public class Monster : MonoBehaviour
             if (mCurHP <= 0 && !isminibossCounted)
             {
                 miniBossNum -= 1;
+                isminibossCounted = true;
             }
         }
         if (monsterType == MonsterType.sealMonster)

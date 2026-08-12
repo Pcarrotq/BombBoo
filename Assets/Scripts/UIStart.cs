@@ -26,13 +26,13 @@ public class UIStart : MonoBehaviour
 
     public void ChangeDifficulty(int index)
     {
-        diffIndex = diffDropdown.value;
+        diffIndex = index;
         Debug.Log("diffIndex = " + diffIndex);
     }
 
     public void ChangeGameMode(int index)
     {
-        modeIndex = modeDropdown.value;
+        modeIndex = index;
         Debug.Log("modeIndex = " + modeIndex);
     }
 }

@@ -26,14 +26,14 @@ public class UIGameBossBattle : MonoBehaviour
     {
         hpBar.maxValue = player.pMaxHP;
         expBar.maxValue = player.pMaxExp;
-        absorptionBar.maxValue = player.pAbsorption;
+        absorptionBar.maxValue = player.pAbsorptionLimit;
     }
 
     void Update()
     {
         hpBar.value = player.pCurrHP;
         expBar.value = player.pCurrExp;
-        absorptionBar.value = player.pAbsorptionLimit;
+        absorptionBar.value = player.pAbsorption;
 
         playerType = player.playerType;
 
@@ -48,7 +48,7 @@ public class UIGameBossBattle : MonoBehaviour
 
         booTimer.text = $"{player.booTimer:N2}";
 
-        //GameClear();
+        GameClear();
         GameOver();
     }
 
@@ -91,6 +91,7 @@ public class UIGameBossBattle : MonoBehaviour
     {
         player.pCurrHP = player.pMaxHP;
         monster.mCurHP = monster.mMaxHP;
+        monster.monIsDead = false;
         monster.miniBossNum = monster.miniBossNumMax;
         gameClaerPanel.SetActive(false);
         gameOverPanel.SetActive(false);

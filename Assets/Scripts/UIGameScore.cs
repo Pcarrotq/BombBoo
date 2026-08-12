@@ -36,7 +36,7 @@ public class UIGameScore : MonoBehaviour
 
     void Update()
     {
-        monster = FindObjectOfType<Monster>();
+        monster = FindFirstObjectByType<Monster>();
         
         hpBar.value = player.pCurrHP;
         expBar.value = player.pCurrExp;
@@ -62,6 +62,8 @@ public class UIGameScore : MonoBehaviour
     public void SkillButtons()
     {
         Debug.Log("SkillButtons");
+
+        if (player == null || player.pAttackSkillNums == null) return;
 
         // 모든 버튼 비활성화
         for (int i = 0; i < skillButtons.Length; i++)
@@ -114,7 +116,7 @@ public class UIGameScore : MonoBehaviour
 
     public void GameOver()
     {
-        if (player.pCurrHP <= 0 && monster.mCurHP > 0)
+        if (player.pCurrHP <= 0)
         {
             gameOverPanel.SetActive(true);
             Time.timeScale = 0f;
@@ -124,8 +126,12 @@ public class UIGameScore : MonoBehaviour
     public void RetryButton()
     {
         player.pCurrHP = player.pMaxHP;
-        monster.mCurHP = monster.mMaxHP;
-        monster.miniBossNum = monster.miniBossNumMax;
+        if (monster != null)
+        {
+            monster.mCurHP = monster.mMaxHP;
+            monster.monIsDead = false;
+            monster.miniBossNum = monster.miniBossNumMax;
+        }
         gameClearPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         Time.timeScale = 1f;
