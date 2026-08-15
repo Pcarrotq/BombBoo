@@ -63,7 +63,8 @@ public class UIGameScore : MonoBehaviour
     {
         Debug.Log("SkillButtons");
 
-        if (player == null || player.pAttackSkillNums == null) return;
+        PlayerSkill playerSkill = player != null ? player.Skill : null;
+        if (playerSkill == null || playerSkill.AttackSkillNumbers == null) return;
 
         // 모든 버튼 비활성화
         for (int i = 0; i < skillButtons.Length; i++)
@@ -73,7 +74,7 @@ public class UIGameScore : MonoBehaviour
         }
         
         // 현재 가진 스킬만 활성
-        foreach (int skill in player.pAttackSkillNums)
+        foreach (int skill in playerSkill.AttackSkillNumbers)
         {
             int skillBtn = skill - 1;
 
@@ -84,13 +85,13 @@ public class UIGameScore : MonoBehaviour
             int skillNum = skill;
 
             skillButtons[skillBtn].onClick.AddListener(() =>
-                player.UseSkill(skillNum));
+            player.UseSkill(skillNum));
         }
     }
 
     /*public void OnClickSkill(int skillNumber)
     {
-        player.UseSkill(player.pAttackSkillNums[skillNumber]);
+        player.UseSkill(player.Skill.AttackSkillNumbers[skillNumber]);
     }*/
 
     public void SettingPanelOpen()

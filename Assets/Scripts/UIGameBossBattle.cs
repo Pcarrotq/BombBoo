@@ -71,6 +71,8 @@ public class UIGameBossBattle : MonoBehaviour
 
     public void GameClear()
     {
+        if (!TryGetMonster()) return;
+
         if (monster.monsterType == MonsterType.boss && monster.mCurHP <= 0 && player.pCurrHP > 0)
         {
             gameClaerPanel.SetActive(true);
@@ -80,6 +82,8 @@ public class UIGameBossBattle : MonoBehaviour
 
     public void GameOver()
     {
+        if (!TryGetMonster()) return;
+
         if (player.pCurrHP <= 0 && monster.mCurHP > 0)
         {
             gameOverPanel.SetActive(true);
@@ -89,6 +93,8 @@ public class UIGameBossBattle : MonoBehaviour
 
     public void RetryButton()
     {
+        if (!TryGetMonster()) return;
+
         player.pCurrHP = player.pMaxHP;
         monster.mCurHP = monster.mMaxHP;
         monster.monIsDead = false;
@@ -96,5 +102,16 @@ public class UIGameBossBattle : MonoBehaviour
         gameClaerPanel.SetActive(false);
         gameOverPanel.SetActive(false);
         Time.timeScale = 1f;
+    }
+
+    private bool TryGetMonster()
+    {
+        if (monster == null)
+        {
+            // ponytail: 보스가 생성될 때까지 프레임마다 탐색한다. 스폰 수가 커지면 MonsterSpawn 이벤트로 전달한다.
+            monster = FindFirstObjectByType<Monster>();
+        }
+
+        return monster != null;
     }
 }

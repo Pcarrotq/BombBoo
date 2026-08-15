@@ -513,6 +513,7 @@ GameObject:
   - component: {fileID: 137856373}
   - component: {fileID: 137856375}
   - component: {fileID: 137856372}
+  - component: {fileID: 137856376}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -601,9 +602,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerType: 0
-  pAttackPoint: {fileID: 507794370}
-  pAttackSkillNums: 
-  pAttackSkills: 
+  playerSkill: {fileID: 137856376}
   pMaxHP: 0
   pCurrHP: 0
   pMaxExp: 0
@@ -613,7 +612,19 @@ MonoBehaviour:
   pAbsorptionLimit: 0
   cameraPivot: {fileID: 229317398}
   booTimer: 0
-  uiGameScore: {fileID: 0}
+--- !u!114 &137856376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 137856369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa690b2cb624d45be8b39f783a342cc, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  pAttackPoint: {fileID: 507794370}
 --- !u!65 &137856373
 BoxCollider:
   m_ObjectHideFlags: 0

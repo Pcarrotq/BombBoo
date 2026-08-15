@@ -1,41 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
     public MonsterType monsterType;
-    MonsterState monsterState;
 
     private bool isReleased;
     private float releaseRange;
-
     private int mAttackForce;
-    public float mAttackRange;
-    private float mAttackTime;
-    private float mAttackTick;
-
-    float mDetectRange;
+    private float mAttackRange;
+    private float mDetectRange;
 
     public float mCurHP;
     public float mMaxHP;
-    public bool monIsDead = false;
+    public bool monIsDead;
     [SerializeField] private MonsterDeathMark deathMark;
 
     public int miniBossNum;
     public int miniBossNumMax;
-
     private bool isminibossCounted;
 
     private Rigidbody rb;
-
-    Player player;
-    float target;
-    Transform playerTrf;
-
+    private MonsterAI monsterAI;
+    private Player player;
+    private Transform playerTrf;
     [SerializeField] private Transform cameraPivot;
 
-    void Start()
+    private void Start()
     {
         isReleased = false;
         releaseRange = 3f;
@@ -44,108 +34,11 @@ public class Monster : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotation;
         rb.useGravity = true;
 
-        mAttackTime = 0f;
-        mAttackTick = 1f;
-
-        // TO-DO: 몬스터마다 deathmark 넓이 달라지게 하기?
-        int difficulty = GameManager.Instance != null
-            ? Mathf.Clamp(GameManager.Instance.diffIndex, 1, 3)
-            : 1;
-
-        if (difficulty == 1)
-        {
-            if (monsterType == MonsterType.boss)
-            {
-                mAttackForce = 10;
-                mAttackRange = 10f;
-                mMaxHP = 1000f;
-            }
-            if (monsterType == MonsterType.miniboss)
-            {
-                mAttackForce = 5;
-                mAttackRange = 5f;
-                mMaxHP = 500f;
-            }
-            if (monsterType == MonsterType.sealMonster)
-            {
-                mAttackForce = 4;
-                mAttackRange = 4f;
-                mDetectRange = 6f;
-                mMaxHP = 400f;
-            }
-            if (monsterType == MonsterType.spider)
-            {
-                mAttackForce = 1;
-                mAttackRange = 1f;
-                mDetectRange = 5f;
-                mMaxHP = 50f;
-            }
-        }
-        if (difficulty == 2)
-        {
-            if (monsterType == MonsterType.boss)
-            {
-                mAttackForce = 20;
-                mAttackRange = 20f;
-                mMaxHP = 2000f;
-            }
-            if (monsterType == MonsterType.miniboss)
-            {
-                mAttackForce = 10;
-                mAttackRange = 10f;
-                mMaxHP = 1000f;
-            }
-            if (monsterType == MonsterType.sealMonster)
-            {
-                mAttackForce = 9;
-                mAttackRange = 9f;
-                mDetectRange = 11f;
-                mMaxHP = 500f;
-            }
-            if (monsterType == MonsterType.spider)
-            {
-                mAttackForce = 5;
-                mAttackRange = 5f;
-                mDetectRange = 10f;
-                mMaxHP = 100f;
-            }
-        }
-        if (difficulty == 3)
-        {
-            if (monsterType == MonsterType.boss)
-            {
-                mAttackForce = 30;
-                mAttackRange = 30f;
-                mMaxHP = 3000f;
-            }
-            if (monsterType == MonsterType.miniboss)
-            {
-                mAttackForce = 20;
-                mAttackRange = 20f;
-                mMaxHP = 2000f;
-            }
-            if (monsterType == MonsterType.sealMonster)
-            {
-                mAttackForce = 15;
-                mAttackRange = 15f;
-                mDetectRange = 25f;
-                mMaxHP = 1000f;
-            }
-            if (monsterType == MonsterType.spider)
-            {
-                mAttackForce = 10;
-                mAttackRange = 10f;
-                mDetectRange = 20f;
-                mMaxHP = 200f;
-            }
-        }
-
+        SetStats(GameManager.Instance != null ? Mathf.Clamp(GameManager.Instance.diffIndex, 1, 3) : 1);
         mCurHP = mMaxHP;
 
         miniBossNumMax = 4;
         miniBossNum = miniBossNumMax;
-
-        isminibossCounted = false;
 
         player = FindFirstObjectByType<Player>();
         if (player == null || cameraPivot == null)
@@ -157,87 +50,92 @@ public class Monster : MonoBehaviour
 
         playerTrf = player.transform;
 
-        // 봉인된 동안 움직이지 않도록 한다.
         if (monsterType == MonsterType.sealMonster)
         {
             rb.isKinematic = true;
             rb.useGravity = false;
         }
 
-        monsterState = MonsterState.Idle;
+        monsterAI = GetComponent<MonsterAI>();
+        if (monsterAI == null)
+        {
+            monsterAI = gameObject.AddComponent<MonsterAI>();
+        }
+
+        monsterAI.Initialize(this, rb, player, mDetectRange, mAttackRange, mAttackForce);
     }
 
-    void Update()
+    private void SetStats(int difficulty)
     {
-        /*if (player.playerType == PlayerType.bomb && Input.GetKeyDown(KeyCode.Tab))
+        if (monsterType == MonsterType.boss)
         {
-            rb.useGravity = true;
+            mAttackForce = 10 * difficulty;
+            mAttackRange = 10f * difficulty;
+            mMaxHP = 1000f * difficulty;
         }
-        if (player.playerType == PlayerType.boo && Input.GetKeyDown(KeyCode.Tab))
+        else if (monsterType == MonsterType.miniboss)
         {
-            rb.useGravity = false;
-        }*/
-        
+            mAttackForce = 5 * difficulty;
+            mAttackRange = 5f * difficulty;
+            mMaxHP = 500f * difficulty;
+        }
+        else if (monsterType == MonsterType.sealMonster)
+        {
+            mAttackForce = difficulty == 1 ? 4 : difficulty == 2 ? 9 : 15;
+            mAttackRange = difficulty == 1 ? 4f : difficulty == 2 ? 9f : 15f;
+            mDetectRange = difficulty == 1 ? 6f : difficulty == 2 ? 11f : 25f;
+            mMaxHP = difficulty == 1 ? 400f : difficulty == 2 ? 500f : 1000f;
+        }
+        else if (monsterType == MonsterType.spider)
+        {
+            mAttackForce = difficulty == 1 ? 1 : difficulty == 2 ? 5 : 10;
+            mAttackRange = difficulty == 1 ? 1f : difficulty == 2 ? 5f : 10f;
+            mDetectRange = 5f * difficulty;
+            mMaxHP = 50f * difficulty;
+        }
+    }
+
+    private void Update()
+    {
         FollowCameraRotate();
 
-        if (monsterType == MonsterType.miniboss)
+        if (monsterType == MonsterType.miniboss && mCurHP <= 0 && !isminibossCounted)
         {
-            if (mCurHP <= 0 && !isminibossCounted)
-            {
-                miniBossNum -= 1;
-                isminibossCounted = true;
-            }
+            miniBossNum -= 1;
+            isminibossCounted = true;
         }
-        if (monsterType == MonsterType.sealMonster)
+
+        if (monsterType != MonsterType.sealMonster || isReleased) return;
+
+        float distance = Vector3.Distance(transform.position, playerTrf.position);
+        if (distance > releaseRange || player.playerType != PlayerType.boo || !Input.GetKeyDown(KeyCode.Q)) return;
+
+        if (player.pCurrExp < player.needExp)
         {
-            if (!isReleased)
-            {
-                float distance = Vector3.Distance(transform.position, playerTrf.position);
-
-                if (distance <= releaseRange && player.playerType == PlayerType.boo && Input.GetKeyDown(KeyCode.Q))
-                {
-                    Debug.Log("Input Key Q");
-                    if (player.pCurrExp >= player.needExp)
-                    {
-                        player.pCurrExp -= player.needExp;
-
-                        isReleased = true;
-
-                        rb.isKinematic = false;
-                        rb.useGravity = true;
-
-                        monsterState = MonsterState.Idle;
-
-                        Debug.Log("봉인이 해제되었습니다!");
-                    }
-                    else
-                    {
-                        Debug.Log("Exp가 부족합니다.");
-                    }
-                }
-            }
+            Debug.Log("Not enough experience.");
+            return;
         }
-        if (monsterType == MonsterType.sealMonster && isReleased)
-        {
-            MonsterAI();
-        }
-        if (monsterType == MonsterType.spider)
-        {
-            MonsterAI();
-        }
+
+        player.pCurrExp -= player.needExp;
+        isReleased = true;
+        rb.isKinematic = false;
+        rb.useGravity = true;
+        Debug.Log("Seal monster released.");
     }
+
+    public bool CanRunAI => !monIsDead &&
+        (monsterType == MonsterType.spider || (monsterType == MonsterType.sealMonster && isReleased));
 
     public void SetCameraPivot(Transform pivot)
     {
         cameraPivot = pivot;
     }
 
-    void FollowCameraRotate()
+    private void FollowCameraRotate()
     {
         transform.rotation = cameraPivot.rotation;
     }
 
-    // TO-DO: 몬스터마다 데미지 다르게 들어가게 하기
     public void TakeDamage(float damage)
     {
         if (monIsDead) return;
@@ -245,91 +143,24 @@ public class Monster : MonoBehaviour
         mCurHP -= damage;
         Debug.Log("Damaged! Now Monster's HP is " + mCurHP);
 
-        if (mCurHP <= 0)
-        {
-            BoxCollider col = GetComponent<BoxCollider>();
-            monIsDead = true;
-            Debug.Log("Monster is dead!");
+        if (mCurHP > 0) return;
 
-            if (monsterType == MonsterType.boss)
-            {
-                Time.timeScale = 0f;
-            }
-            if (monsterType == MonsterType.spider)
-            {
-                Instantiate(
-                    deathMark,
-                    new Vector3(transform.position.x, col.bounds.min.y + 0.1f, transform.position.z),
-                    Quaternion.Euler(90, 0, 0)
-                ); // transform.position, deathMark.transform.rotation
-                Destroy(gameObject);
-                player.GetExp(100);
-            }
+        BoxCollider col = GetComponent<BoxCollider>();
+        monIsDead = true;
+        Debug.Log("Monster is dead!");
+
+        if (monsterType == MonsterType.boss)
+        {
+            Time.timeScale = 0f;
         }
-    }
-
-    void MonsterAI()
-    {
-        target = Vector3.Distance(transform.position, playerTrf.position);
-
-        switch (monsterState)
+        else if (monsterType == MonsterType.spider)
         {
-            // -- Idle -------------------------------------------------
-            case MonsterState.Idle:
-                Debug.Log("Monster Idle");
-
-                // 감지 범위에 들어오면
-                if (target < mDetectRange)
-                {
-                    // 쫓기
-                    monsterState = MonsterState.Chase;
-                }
-
-                break;
-            
-            
-            // -- Chase ------------------------------------------------
-            case MonsterState.Chase:
-                Debug.Log("Monster Chase");
-
-                Vector3 dir = (playerTrf.position - transform.position).normalized;
-                //transform.position += dir * Time.deltaTime * 2f;
-                rb.MovePosition(rb.position + dir * Time.deltaTime * 2f);
-                
-                // 범위에서 나가면
-                if (target > mDetectRange)
-                {
-                    // 멈추기
-                    monsterState = MonsterState.Idle;
-                }
-                
-                // 공격 범위에 들어오면
-                if (target < mAttackRange)
-                {
-                    monsterState = MonsterState.Attack;
-                }
-                
-                break;
-            
-            
-            // -- Attack -----------------------------------------------
-            case MonsterState.Attack:
-                Debug.Log("Monster Attack");
-
-                if (target < mAttackRange && player.playerType == PlayerType.bomb)
-                {
-                    if (Time.time >= mAttackTime)
-                    {
-                        player.TakeDamage(mAttackForce);
-                        mAttackTime = Time.time + mAttackTick;
-                    }
-                }
-                else
-                {
-                    monsterState = MonsterState.Chase;
-                }
-
-                break;
+            Instantiate(
+                deathMark,
+                new Vector3(transform.position.x, col.bounds.min.y + 0.1f, transform.position.z),
+                Quaternion.Euler(90, 0, 0));
+            Destroy(gameObject);
+            player.GetExp(100);
         }
     }
 }
