@@ -28,10 +28,16 @@ public class PlayerSkill : MonoBehaviour
             return;
         }
 
-        foreach (Collider collider in Physics.OverlapBox(pAttackPoint.position, pAttackRange))
+        HashSet<Monster> hitMonsters = new HashSet<Monster>();
+        foreach (Collider collider in Physics.OverlapBox(
+            pAttackPoint.position,
+            pAttackRange,
+            Quaternion.identity,
+            Physics.AllLayers,
+            QueryTriggerInteraction.Collide))
         {
             Monster monster = collider.GetComponentInParent<Monster>();
-            if (monster != null)
+            if (monster != null && hitMonsters.Add(monster))
             {
                 monster.TakeDamage(AttackForce);
             }

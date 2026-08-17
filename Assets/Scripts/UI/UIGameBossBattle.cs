@@ -116,10 +116,16 @@ public class UIGameBossBattle : MonoBehaviour
 
     public void GameClear()
     {
+        if (BossBattleController.IsCleared && player.pCurrHP > 0)
+        {
+            gameClaerPanel.SetActive(true);
+            Time.timeScale = 0f;
+            return;
+        }
+
         if (!TryGetMonster()) return;
 
-        if ((BossBattleController.IsCleared ||
-             monster.monsterType == MonsterType.boss && monster.mCurHP <= 0) && player.pCurrHP > 0)
+        if (monster.monsterType == MonsterType.boss && monster.mCurHP <= 0 && player.pCurrHP > 0)
         {
             gameClaerPanel.SetActive(true);
             Time.timeScale = 0f;
@@ -139,15 +145,7 @@ public class UIGameBossBattle : MonoBehaviour
 
     public void RetryButton()
     {
-        if (!TryGetMonster()) return;
-
-        player.pCurrHP = player.pMaxHP;
-        monster.mCurHP = monster.mMaxHP;
-        monster.monIsDead = false;
-        monster.miniBossNum = monster.miniBossNumMax;
-        gameClaerPanel.SetActive(false);
-        gameOverPanel.SetActive(false);
-        Time.timeScale = 1f;
+        SceneChange.ReloadCurrentScene();
     }
 
     private bool TryGetMonster()

@@ -127,9 +127,10 @@ public abstract class Monster : MonoBehaviour
 
     public virtual void TakeDamage(float damage)
     {
-        if (monIsDead) return;
+        if (monIsDead || StartsSealed && !isReleased) return;
 
         mCurHP -= damage;
+        Debug.Log($"{name} HP: {mCurHP}/{mMaxHP}", this);
         if (mCurHP > 0) return;
 
         monIsDead = true;

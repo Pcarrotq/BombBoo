@@ -17,7 +17,7 @@ public class Boss : Monster
 
     protected override void ConfigureStats(int difficulty)
     {
-        SetCombatStats(10 * difficulty, 10f * difficulty, 0f, 1000f * difficulty);
+        SetCombatStats(10 * difficulty, 10f * difficulty, 0f, 40f);
     }
 
     protected override void OnDeath()
@@ -50,8 +50,4 @@ public class Boss : Monster
         }
     }
 
-    public override void TakeDamage(float damage)
-    {
-        if (IsReleased) base.TakeDamage(damage);
-    }
 }

@@ -126,15 +126,6 @@ public class UIGameScore : MonoBehaviour
 
     public void RetryButton()
     {
-        player.pCurrHP = player.pMaxHP;
-        if (monster != null)
-        {
-            monster.mCurHP = monster.mMaxHP;
-            monster.monIsDead = false;
-            monster.miniBossNum = monster.miniBossNumMax;
-        }
-        gameClearPanel.SetActive(false);
-        gameOverPanel.SetActive(false);
-        Time.timeScale = 1f;
+        SceneChange.ReloadCurrentScene();
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerSkill))]
@@ -9,6 +10,7 @@ public class Player : MonoBehaviour
     private Animator animator;
     private float pSpeed = 5f;
     private bool isGround;
+    private readonly HashSet<Collider> groundContacts = new HashSet<Collider>();
     private float pJumpForce = 5f;
 
     [SerializeField] private PlayerSkill playerSkill;
@@ -75,8 +77,8 @@ public class Player : MonoBehaviour
     {
         if (!collision.gameObject.CompareTag("Ground")) return;
 
-        isGround = true;
-        animator.SetBool("IsGround", true);
+        groundContacts.Add(collision.collider);
+        UpdateGroundedState();
         animator.SetBool("IsJump", false);
     }
 
@@ -84,8 +86,14 @@ public class Player : MonoBehaviour
     {
         if (!collision.gameObject.CompareTag("Ground")) return;
 
-        isGround = false;
-        animator.SetBool("IsGround", false);
+        groundContacts.Remove(collision.collider);
+        UpdateGroundedState();
+    }
+
+    private void UpdateGroundedState()
+    {
+        isGround = groundContacts.Count > 0;
+        animator.SetBool("IsGround", isGround);
     }
 
     void FollowCameraRotate()

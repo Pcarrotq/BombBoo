@@ -32,6 +32,11 @@ public class SceneChange : MonoBehaviour
         LoadScene("StartScene");
     }
 
+    public static void ReloadCurrentScene()
+    {
+        LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     private static void LoadScene(string sceneName)
     {
         Time.timeScale = 1f;

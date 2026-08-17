@@ -4,7 +4,7 @@ public class MiniBoss : Monster
 
     protected override void ConfigureStats(int difficulty)
     {
-        SetCombatStats(5 * difficulty, 5f * difficulty, 0f, 500f * difficulty);
+        SetCombatStats(5 * difficulty, 5f * difficulty, 0f, 10f);
         miniBossNumMax = 4;
         miniBossNum = miniBossNumMax;
     }
