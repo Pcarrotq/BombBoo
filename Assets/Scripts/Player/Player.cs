@@ -123,9 +123,7 @@ public class Player : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                rb.useGravity = false;
-                playerType = PlayerType.boo;
-                animator.SetBool("isBoo", true);
+                SetPlayerType(PlayerType.boo);
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -140,10 +138,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                rb.useGravity = true;
-                playerType = PlayerType.bomb;
-                animator.SetBool("isBoo", false);
-                booTimer = 5f;
+                SetPlayerType(PlayerType.bomb);
                 return;
             }
 
@@ -171,10 +166,7 @@ public class Player : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                rb.useGravity = true;
-                playerType = PlayerType.bomb;
-                animator.SetBool("isBoo", false);
-                booTimer = 5f;
+                SetPlayerType(PlayerType.bomb);
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -194,6 +186,20 @@ public class Player : MonoBehaviour
             {
                 pAbsorption = Mathf.Max(0, pAbsorption - pAbsorptionLow);
             }
+        }
+    }
+
+    private void SetPlayerType(PlayerType type)
+    {
+        bool isBoo = type == PlayerType.boo;
+        playerType = type;
+        rb.useGravity = !isBoo;
+        animator.SetBool("isBoo", isBoo);
+        animator.SetBool("isJumpReady", false);
+
+        if (!isBoo)
+        {
+            booTimer = 5f;
         }
     }
 
