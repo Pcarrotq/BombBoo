@@ -570,8 +570,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIGame, Assembly-CSharp
+      - m_Target: {fileID: 544359729}
+        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
         m_MethodName: SettingPanelOpen
         m_Mode: 1
         m_Arguments:
@@ -1226,19 +1226,6 @@ MonoBehaviour:
   pAbsorptionLimit: 0
   cameraPivot: {fileID: 334758230}
   booTimer: 0
---- !u!114 &137856376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 137856369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fa690b2cb624d45be8b39f783a342cc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  pAttackPoint: {fileID: 507794370}
 --- !u!65 &137856373
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1308,6 +1295,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &137856376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 137856369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa690b2cb624d45be8b39f783a342cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pAttackPoint: {fileID: 507794370}
 --- !u!1 &184048767
 GameObject:
   m_ObjectHideFlags: 0
@@ -1562,8 +1562,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIGame, Assembly-CSharp
+      - m_Target: {fileID: 544359729}
+        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
         m_MethodName: SettingPanelClose
         m_Mode: 1
         m_Arguments:
@@ -1992,8 +1992,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIGame, Assembly-CSharp
+      - m_Target: {fileID: 544359729}
+        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
         m_MethodName: RetryButton
         m_Mode: 1
         m_Arguments:
@@ -2708,7 +2708,7 @@ MonoBehaviour:
   booTimer: {fileID: 28371942}
   booTimerPanel: {fileID: 817015732}
   settingPanel: {fileID: 1375731014}
-  gameClaerPanel: {fileID: 1953633441}
+  gameClearPanel: {fileID: 0}
   gameOverPanel: {fileID: 1957080540}
 --- !u!1 &585239023
 GameObject:
@@ -3260,8 +3260,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UIGame, Assembly-CSharp
+      - m_Target: {fileID: 544359729}
+        m_TargetAssemblyTypeName: UIGameScore, Assembly-CSharp
         m_MethodName: RetryButton
         m_Mode: 1
         m_Arguments:
@@ -5987,7 +5987,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f372e8b6a2fd194eb62326523bdded1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monster: {fileID: 6595161813784983242, guid: ee22f971183e842419da1dd8eeb19cc9, type: 3}
+  elementalPrefab: {fileID: 5021324824447707372, guid: 28b8351097e749748baef0a21e53b41a, type: 3}
+  fishPrefab: {fileID: 3419905088136225175, guid: ee22f971183e842419da1dd8eeb19cc9, type: 3}
+  spiderPrefab: {fileID: 716799177222074301, guid: 02259b4fffad8924b831a4af31d52589, type: 3}
+  tigerPrefab: {fileID: 2645945643666243900, guid: cd5dea581e642e241ba5f10be590cc2a, type: 3}
   cameraPivot: {fileID: 334758230}
 --- !u!4 &1611710549
 Transform:

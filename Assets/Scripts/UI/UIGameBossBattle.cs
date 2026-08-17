@@ -17,6 +17,10 @@ public class UIGameBossBattle : MonoBehaviour
 
     [SerializeField] private TMP_Text booTimer;
     [SerializeField] private GameObject booTimerPanel;
+    [SerializeField] private TMP_Text insufficientExperienceText;
+    [SerializeField] private TMP_FontAsset koreanFontAsset;
+    private Coroutine insufficientExperienceCoroutine;
+    private bool supportsKorean;
 
     [SerializeField] private GameObject settingPanel;
     [SerializeField] private GameObject gameClaerPanel;
@@ -24,6 +28,12 @@ public class UIGameBossBattle : MonoBehaviour
 
     void Start()
     {
+        if (insufficientExperienceText != null)
+        {
+            supportsKorean = ApplyKoreanFont();
+            insufficientExperienceText.gameObject.SetActive(false);
+        }
+
         hpBar.maxValue = player.pMaxHP;
         expBar.maxValue = player.pMaxExp;
         absorptionBar.maxValue = player.pAbsorptionLimit;
@@ -57,6 +67,41 @@ public class UIGameBossBattle : MonoBehaviour
         player.UseSkill(skillNumber);
     }
 
+    public void ShowInsufficientExperience()
+    {
+        ShowWarning("경험치가 충분하지 않습니다.", "Not enough experience.");
+    }
+
+    private bool ApplyKoreanFont()
+    {
+        if (koreanFontAsset == null) return false;
+
+        insufficientExperienceText.font = koreanFontAsset;
+        return true;
+    }
+
+    public void ShowWarning(string message, string fallbackMessage)
+    {
+        if (insufficientExperienceText == null) return;
+
+        if (insufficientExperienceCoroutine != null)
+        {
+            StopCoroutine(insufficientExperienceCoroutine);
+        }
+
+        insufficientExperienceCoroutine = StartCoroutine(
+            ShowWarningMessage(supportsKorean ? message : fallbackMessage));
+    }
+
+    private IEnumerator ShowWarningMessage(string message)
+    {
+        insufficientExperienceText.text = message;
+        insufficientExperienceText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        insufficientExperienceText.gameObject.SetActive(false);
+        insufficientExperienceCoroutine = null;
+    }
+
     public void SettingPanelOpen()
     {
         settingPanel.SetActive(true);
@@ -73,7 +118,8 @@ public class UIGameBossBattle : MonoBehaviour
     {
         if (!TryGetMonster()) return;
 
-        if (monster.monsterType == MonsterType.boss && monster.mCurHP <= 0 && player.pCurrHP > 0)
+        if ((BossBattleController.IsCleared ||
+             monster.monsterType == MonsterType.boss && monster.mCurHP <= 0) && player.pCurrHP > 0)
         {
             gameClaerPanel.SetActive(true);
             Time.timeScale = 0f;

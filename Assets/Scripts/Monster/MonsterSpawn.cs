@@ -1,10 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MonsterSpawn : MonoBehaviour
 {
-    [SerializeField] private GameObject monster;
+    [SerializeField] private Elemental elementalPrefab;
+    [SerializeField] private Fish fishPrefab;
+    [SerializeField] private Spider spiderPrefab;
+    [SerializeField] private Tiger tigerPrefab;
     [SerializeField] private Transform cameraPivot;
 
     private int maxMonster;
@@ -17,9 +19,9 @@ public class MonsterSpawn : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (monster == null || cameraPivot == null)
+        if (elementalPrefab == null || fishPrefab == null || spiderPrefab == null || tigerPrefab == null || cameraPivot == null)
         {
-            Debug.LogError("Monster prefab or Camera Pivot is not assigned.", this);
+            Debug.LogError("All monster prefabs and the Camera Pivot must be assigned.", this);
             enabled = false;
             return;
         }
@@ -48,18 +50,19 @@ public class MonsterSpawn : MonoBehaviour
             Random.Range(-5f, 5f),
             Random.Range(-5f, 5f));
 
-        GameObject obj = Instantiate(monster, randomPos, Quaternion.identity);
-
-        Monster m = obj.GetComponent<Monster>();
-        if (m == null)
-        {
-            Debug.LogError("Monster prefab does not contain a Monster component.", obj);
-            Destroy(obj);
-            return;
-        }
-
+        Monster m = Instantiate(SelectPrefab(), randomPos, Quaternion.identity);
         m.SetCameraPivot(cameraPivot);
         spawnedMonsters.Add(m);
         currMonster = spawnedMonsters.Count;
+    }
+
+    private Monster SelectPrefab()
+    {
+        int roll = Random.Range(0, 100);
+
+        if (roll < 50) return elementalPrefab;
+        if (roll < 70) return fishPrefab;
+        if (roll < 85) return spiderPrefab;
+        return tigerPrefab;
     }
 }

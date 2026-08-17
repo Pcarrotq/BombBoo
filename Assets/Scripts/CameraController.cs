@@ -5,6 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private Transform cameraPivot;
+    public Transform CameraPivot => cameraPivot;
     private Quaternion targetRotate;
     private float rotateSpeed = 360f;
     private bool isRotating;

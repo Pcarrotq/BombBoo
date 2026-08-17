@@ -6,6 +6,9 @@ public enum MonsterType
 {
     boss,
     miniboss,
-    sealMonster,
-    spider
+    seal,
+    fish,
+    spider,
+    tiger,
+    elemental
 }

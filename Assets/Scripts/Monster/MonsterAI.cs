@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class MonsterAI : MonoBehaviour
 {
-    private const float MoveSpeed = 2f;
     private const float AttackCooldown = 1f;
 
     private Monster monster;
@@ -13,10 +12,14 @@ public class MonsterAI : MonoBehaviour
     private float detectRange;
     private float attackRange;
     private int attackForce;
+    private float moveSpeed;
+    private float idleMoveSpeed;
+    private Vector3 idleDirection;
+    private float nextIdleDirectionTime;
     private float nextAttackTime;
     private bool isInitialized;
 
-    public void Initialize(Monster owner, Rigidbody rigidbody, Player target, float detectionRange, float attackDistance, int damage)
+    public void Initialize(Monster owner, Rigidbody rigidbody, Player target, float detectionRange, float attackDistance, int damage, float chaseSpeed, float idleSpeed)
     {
         monster = owner;
         rb = rigidbody;
@@ -25,6 +28,8 @@ public class MonsterAI : MonoBehaviour
         detectRange = detectionRange;
         attackRange = attackDistance;
         attackForce = damage;
+        moveSpeed = chaseSpeed;
+        idleMoveSpeed = idleSpeed;
         state = MonsterState.Idle;
         isInitialized = true;
     }
@@ -38,12 +43,13 @@ public class MonsterAI : MonoBehaviour
         switch (state)
         {
             case MonsterState.Idle:
+                MoveWhileIdle();
                 if (targetDistance < detectRange) state = MonsterState.Chase;
                 break;
 
             case MonsterState.Chase:
                 Vector3 direction = (playerTransform.position - transform.position).normalized;
-                rb.MovePosition(rb.position + direction * Time.deltaTime * MoveSpeed);
+                rb.MovePosition(rb.position + direction * Time.deltaTime * moveSpeed);
 
                 if (targetDistance > detectRange) state = MonsterState.Idle;
                 else if (targetDistance < attackRange) state = MonsterState.Attack;
@@ -64,5 +70,20 @@ public class MonsterAI : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private void MoveWhileIdle()
+    {
+        if (idleMoveSpeed <= 0f) return;
+
+        if (Time.time >= nextIdleDirectionTime)
+        {
+            idleDirection = Random.insideUnitSphere;
+            idleDirection.y = 0f;
+            idleDirection.Normalize();
+            nextIdleDirectionTime = Time.time + 2f;
+        }
+
+        rb.MovePosition(rb.position + idleDirection * Time.deltaTime * idleMoveSpeed);
     }
 }

@@ -220,6 +220,21 @@ public class Player : MonoBehaviour
         Debug.Log("Player Exp = " + pCurrExp);
     }
 
+    public void ShowInsufficientExperience()
+    {
+        ShowWarning("경험치가 충분하지 않습니다.", "Not enough experience.");
+    }
+
+    public void ShowWarning(string message, string fallbackMessage)
+    {
+        if (uiGameBossBattle == null)
+        {
+            uiGameBossBattle = FindFirstObjectByType<UIGameBossBattle>();
+        }
+
+        uiGameBossBattle?.ShowWarning(message, fallbackMessage);
+    }
+
     public void UseSkill(int skillNumber)
     {
         playerSkill.UseSkill(skillNumber);

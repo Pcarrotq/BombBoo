@@ -30,8 +30,8 @@ public class PlayerSkill : MonoBehaviour
 
         foreach (Collider collider in Physics.OverlapBox(pAttackPoint.position, pAttackRange))
         {
-            Monster monster = collider.GetComponent<Monster>();
-            if (collider.CompareTag("Monster") && monster != null)
+            Monster monster = collider.GetComponentInParent<Monster>();
+            if (monster != null)
             {
                 monster.TakeDamage(AttackForce);
             }

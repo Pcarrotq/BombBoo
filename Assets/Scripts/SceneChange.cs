@@ -19,16 +19,22 @@ public class SceneChange : MonoBehaviour
 
         if (uiStart.modeIndex == 1)
         {
-            SceneManager.LoadScene("GameBossBattleScene");
+            LoadScene("GameBossBattleScene");
         }
         if (uiStart.modeIndex == 2)
         {
-            SceneManager.LoadScene("GameScoreScene");
+            LoadScene("GameScoreScene");
         }
     }
 
     public void GameToStart()
     {
-        SceneManager.LoadScene("StartScene");
+        LoadScene("StartScene");
+    }
+
+    private static void LoadScene(string sceneName)
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(sceneName);
     }
 }
