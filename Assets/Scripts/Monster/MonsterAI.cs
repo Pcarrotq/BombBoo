@@ -49,7 +49,7 @@ public class MonsterAI : MonoBehaviour
 
             case MonsterState.Chase:
                 Vector3 direction = (playerTransform.position - transform.position).normalized;
-                rb.MovePosition(rb.position + direction * Time.deltaTime * moveSpeed);
+                monster.Move(direction, moveSpeed);
 
                 if (targetDistance > detectRange) state = MonsterState.Idle;
                 else if (targetDistance < attackRange) state = MonsterState.Attack;
@@ -84,6 +84,6 @@ public class MonsterAI : MonoBehaviour
             nextIdleDirectionTime = Time.time + 2f;
         }
 
-        rb.MovePosition(rb.position + idleDirection * Time.deltaTime * idleMoveSpeed);
+        monster.Move(idleDirection, idleMoveSpeed);
     }
 }

@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BossBattleController : MonoBehaviour
@@ -8,6 +10,7 @@ public class BossBattleController : MonoBehaviour
     private Boss boss;
     private int miniBossesRemaining;
     private bool hasRemovedOtherMonsters;
+    private BossFogEffect fog;
 
     public static bool IsCleared => instance != null && instance.isCleared;
     private bool isCleared;
@@ -58,6 +61,8 @@ public class BossBattleController : MonoBehaviour
         if (source != boss || miniBossesRemaining > 0) return;
 
         miniBossesRemaining = RequiredSealCount;
+        fog = gameObject.AddComponent<BossFogEffect>();
+        List<MiniBoss> miniBosses = new List<MiniBoss>(miniBossesRemaining);
         for (int i = 0; i < miniBossesRemaining; i++)
         {
             float angle = i * Mathf.PI * 2f / miniBossesRemaining;
@@ -66,10 +71,27 @@ public class BossBattleController : MonoBehaviour
             Boss copiedBoss = miniBossObject.GetComponent<Boss>();
             copiedBoss.enabled = false;
             Destroy(copiedBoss);
-            miniBossObject.AddComponent<MiniBoss>();
+            MiniBoss miniBoss = miniBossObject.AddComponent<MiniBoss>();
+            miniBoss.HideInFog();
+            miniBosses.Add(miniBoss);
         }
 
         Destroy(source.gameObject);
+        StartCoroutine(RunAmbush(miniBosses));
+    }
+
+    private IEnumerator RunAmbush(List<MiniBoss> miniBosses)
+    {
+        yield return new WaitForSeconds(1f);
+
+        foreach (MiniBoss miniBoss in miniBosses)
+        {
+            if (miniBoss == null) continue;
+
+            miniBoss.AttackOnce();
+            while (miniBoss != null && !miniBoss.HasFinishedAttack) yield return null;
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     public void ReportMiniBossDeath()
@@ -77,6 +99,7 @@ public class BossBattleController : MonoBehaviour
         miniBossesRemaining--;
         if (miniBossesRemaining <= 0)
         {
+            if (fog != null) Destroy(fog);
             isCleared = true;
             Time.timeScale = 0f;
         }
@@ -88,5 +111,50 @@ public class BossBattleController : MonoBehaviour
         {
             if (monster != boss) Destroy(monster.gameObject);
         }
+    }
+}
+
+public class BossFogEffect : MonoBehaviour
+{
+    private const float TargetDensity = 0.06f;
+    private static readonly Color FogColor = new Color(0.18f, 0.2f, 0.24f);
+
+    private bool previousFog;
+    private Color previousColor;
+    private FogMode previousMode;
+    private float previousDensity;
+
+    private void Awake()
+    {
+        previousFog = RenderSettings.fog;
+        previousColor = RenderSettings.fogColor;
+        previousMode = RenderSettings.fogMode;
+        previousDensity = RenderSettings.fogDensity;
+
+        RenderSettings.fog = true;
+        RenderSettings.fogColor = FogColor;
+        RenderSettings.fogMode = FogMode.ExponentialSquared;
+        RenderSettings.fogDensity = 0f;
+        StartCoroutine(FadeIn());
+    }
+
+    private IEnumerator FadeIn()
+    {
+        const float duration = 1f;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            RenderSettings.fogDensity = Mathf.Lerp(0f, TargetDensity, elapsed / duration);
+            yield return null;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        RenderSettings.fog = previousFog;
+        RenderSettings.fogColor = previousColor;
+        RenderSettings.fogMode = previousMode;
+        RenderSettings.fogDensity = previousDensity;
     }
 }

@@ -40,6 +40,14 @@ public class SceneChange : MonoBehaviour
     private static void LoadScene(string sceneName)
     {
         Time.timeScale = 1f;
+        SceneManager.sceneLoaded -= ResumeTime;
+        SceneManager.sceneLoaded += ResumeTime;
         SceneManager.LoadScene(sceneName);
+    }
+
+    private static void ResumeTime(Scene scene, LoadSceneMode mode)
+    {
+        Time.timeScale = 1f;
+        SceneManager.sceneLoaded -= ResumeTime;
     }
 }

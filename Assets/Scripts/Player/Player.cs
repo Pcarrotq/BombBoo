@@ -9,9 +9,11 @@ public class Player : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
     private float pSpeed = 5f;
+    public float MoveSpeed => pSpeed;
     private bool isGround;
     private readonly HashSet<Collider> groundContacts = new HashSet<Collider>();
     private float pJumpForce = 5f;
+    public float JumpForce => pJumpForce;
 
     [SerializeField] private PlayerSkill playerSkill;
     public PlayerSkill Skill => playerSkill;

@@ -21,6 +21,7 @@ public abstract class Monster : MonoBehaviour
     protected virtual bool UsesAI => false;
     protected virtual bool StartsSealed => false;
     protected virtual bool UsesGravity => true;
+    protected virtual bool IsKinematic => false;
     protected virtual float ChaseMoveSpeed => 2f;
     protected virtual float IdleMoveSpeed => 0f;
     public bool CanRunAI => !monIsDead && UsesAI && (!StartsSealed || isReleased);
@@ -40,6 +41,7 @@ public abstract class Monster : MonoBehaviour
         }
 
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+        rb.isKinematic = IsKinematic;
         rb.useGravity = UsesGravity;
         ConfigureStats(GameManager.Instance != null ? Mathf.Clamp(GameManager.Instance.diffIndex, 1, 3) : 1);
         mCurHP = mMaxHP;
@@ -123,6 +125,16 @@ public abstract class Monster : MonoBehaviour
     public void SetCameraPivot(Transform pivot)
     {
         cameraPivot = pivot;
+    }
+
+    public virtual void Move(Vector3 direction, float speed)
+    {
+        rb.MovePosition(rb.position + direction * Time.deltaTime * speed);
+    }
+
+    protected void MoveTo(Vector3 position)
+    {
+        rb.MovePosition(position);
     }
 
     public virtual void TakeDamage(float damage)
