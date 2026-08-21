@@ -10,6 +10,6 @@ public class Elemental : Monster
 
     protected override void OnDeath()
     {
-        SpawnDeathMarkAndDestroy(25);
+        SpawnDeathMarkAndDestroy(25, 10);
     }
 }

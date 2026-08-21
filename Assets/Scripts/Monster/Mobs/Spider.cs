@@ -24,7 +24,7 @@ public class Spider : Monster
 
     protected override void OnDeath()
     {
-        SpawnDeathMarkAndDestroy(100);
+        SpawnDeathMarkAndDestroy(100, 100);
     }
 
     protected override void TickMonster()

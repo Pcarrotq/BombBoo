@@ -11,6 +11,6 @@ public class Fish : Monster
 
     protected override void OnDeath()
     {
-        SpawnDeathMarkAndDestroy(100);
+        SpawnDeathMarkAndDestroy(100, 100);
     }
 }

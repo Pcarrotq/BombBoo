@@ -62,9 +62,9 @@ public class UIGameBossBattle : MonoBehaviour
         GameOver();
     }
 
-    public void OnClickSkill(int skillNumber)
+    public void OnClickSkill(int slotNumber)
     {
-        player.UseSkill(skillNumber);
+        player.UseSkillAtSlot(slotNumber - 1);
     }
 
     public void ShowInsufficientExperience()

@@ -12,6 +12,6 @@ public class Tiger : Monster
 
     protected override void OnDeath()
     {
-        SpawnDeathMarkAndDestroy(200);
+        SpawnDeathMarkAndDestroy(200, 100);
     }
 }

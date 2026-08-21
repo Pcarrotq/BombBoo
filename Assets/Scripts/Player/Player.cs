@@ -4,6 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerSkill))]
 public class Player : MonoBehaviour
 {
+    private const float DamageCooldown = 0.5f;
+
     private SpriteRenderer sprite;
     public PlayerType playerType;
     private Rigidbody rb;
@@ -14,6 +16,8 @@ public class Player : MonoBehaviour
     private readonly HashSet<Collider> groundContacts = new HashSet<Collider>();
     private float pJumpForce = 5f;
     public float JumpForce => pJumpForce;
+    private Vector3 moveDirection;
+    private float nextDamageTime;
 
     [SerializeField] private PlayerSkill playerSkill;
     public PlayerSkill Skill => playerSkill;
@@ -57,22 +61,24 @@ public class Player : MonoBehaviour
         pAbsorptionLow = 10;
         booTimer = 5f;
 
-        int modeIndex = GameManager.Instance != null ? GameManager.Instance.modeIndex : 0;
-        if (modeIndex == 1)
-        {
-            uiGameBossBattle = FindFirstObjectByType<UIGameBossBattle>();
-        }
-        else if (modeIndex == 2)
-        {
-            uiGameScore = FindFirstObjectByType<UIGameScore>();
-            RefreshSkills();
-        }
+        uiGameBossBattle = FindFirstObjectByType<UIGameBossBattle>();
+        uiGameScore = FindFirstObjectByType<UIGameScore>();
+        RefreshSkills();
     }
 
     void Update()
     {
+        moveDirection = Vector3.zero;
         KeyInput();
         FollowCameraRotate();
+    }
+
+    void FixedUpdate()
+    {
+        if (moveDirection != Vector3.zero)
+        {
+            rb.MovePosition(rb.position + moveDirection.normalized * pSpeed * Time.fixedDeltaTime);
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -109,17 +115,19 @@ public class Player : MonoBehaviour
 
         if (playerType == PlayerType.bomb)
         {
+            Vector3 cameraRight = Vector3.ProjectOnPlane(cameraPivot.right, Vector3.up).normalized;
+
             if (Input.GetKey(KeyCode.A))
             {
                 sprite.flipX = false;
                 animator.SetBool("isMoving", true);
-                transform.Translate(Vector3.left * pSpeed * Time.deltaTime);
+                moveDirection -= cameraRight;
             }
             if (Input.GetKey(KeyCode.D))
             {
                 sprite.flipX = true;
                 animator.SetBool("isMoving", true);
-                transform.Translate(Vector3.right * pSpeed * Time.deltaTime);
+                moveDirection += cameraRight;
             }
             if (Input.GetKey(KeyCode.Space) && isGround)
             {
@@ -139,6 +147,18 @@ public class Player : MonoBehaviour
             {
                 playerSkill.AttackRange();
             }
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                UseSkillAtSlot(0);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                UseSkillAtSlot(1);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                UseSkillAtSlot(2);
+            }
         }
         else if (playerType == PlayerType.boo)
         {
@@ -155,24 +175,24 @@ public class Player : MonoBehaviour
             if (Input.GetKey(KeyCode.W))
             {
                 animator.SetBool("isMoving", true);
-                transform.Translate(Vector3.up * pSpeed * Time.deltaTime);
+                moveDirection += cameraPivot.up;
             }
             if (Input.GetKey(KeyCode.A))
             {
                 sprite.flipX = false;
                 animator.SetBool("isMoving", true);
-                transform.Translate(Vector3.left * pSpeed * Time.deltaTime);
+                moveDirection -= cameraPivot.right;
             }
             if (Input.GetKey(KeyCode.S))
             {
                 animator.SetBool("isMoving", true);
-                transform.Translate(Vector3.down * pSpeed * Time.deltaTime);
+                moveDirection -= cameraPivot.up;
             }
             if (Input.GetKey(KeyCode.D))
             {
                 sprite.flipX = true;
                 animator.SetBool("isMoving", true);
-                transform.Translate(Vector3.right * pSpeed * Time.deltaTime);
+                moveDirection += cameraPivot.right;
             }
             if (Input.GetKeyDown(KeyCode.Tab))
             {
@@ -180,16 +200,15 @@ public class Player : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                playerSkill.DestroyDeathMark();
-                pCurrExp -= 5;
-                pAbsorption += pAbsorptionAmount;
-                if (pAbsorption >= pAbsorptionLimit)
+                if (playerSkill.DestroyDeathMark())
                 {
-                    while (pCurrHP > 0)
+                    pCurrExp = Mathf.Max(0, pCurrExp - 5);
+                    pAbsorption += pAbsorptionAmount;
+                    if (pAbsorption >= pAbsorptionLimit)
                     {
-                        TakeDamage(10);
+                        TakeDamage(pCurrHP, true);
+                        pAbsorption = 0;
                     }
-                    pAbsorption = 0;
                 }
             }
             if (Input.GetKeyDown(KeyCode.Q))
@@ -213,8 +232,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, bool ignoreCooldown = false)
     {
+        if (pCurrHP <= 0 || (!ignoreCooldown && Time.time < nextDamageTime)) return;
+
+        nextDamageTime = Time.time + DamageCooldown;
         pCurrHP -= damage;
         Debug.Log("Player " + damage + "Damage!");
 
@@ -259,6 +281,13 @@ public class Player : MonoBehaviour
         {
             uiGameScore.SkillButtons();
         }
+    }
+
+    public void UseSkillAtSlot(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= playerSkill.AttackSkillNumbers.Length) return;
+
+        UseSkill(playerSkill.AttackSkillNumbers[slotIndex]);
     }
 
     void RefreshSkills()

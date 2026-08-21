@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour
     private bool isTapPress = false;
 
     [SerializeField] private Player player;
+    private Vector3 followOffset;
 
     // Start is called before the first frame update
     void Awake()
@@ -30,6 +31,10 @@ public class CameraController : MonoBehaviour
         }
 
         targetRotate = cameraPivot.rotation;
+        if (player != null)
+        {
+            followOffset = cameraPivot.position - player.transform.position;
+        }
     }
 
     // Update is called once per frame
@@ -37,17 +42,30 @@ public class CameraController : MonoBehaviour
     {
         KeyInput();
     }
+
+    void LateUpdate()
+    {
+        if (player == null)
+        {
+            player = FindFirstObjectByType<Player>();
+            if (player == null) return;
+
+            followOffset = cameraPivot.position - player.transform.position;
+        }
+
+        cameraPivot.position = player.transform.position + followOffset;
+    }
     
     void KeyInput()
     {
         if (!isRotating)
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.Z))
             {
                 targetRotate = cameraPivot.rotation * Quaternion.Euler(0, 90, 0);
                 StartCoroutine(RotateCamera());
             }
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.C))
             {
                 targetRotate = cameraPivot.rotation * Quaternion.Euler(0, -90, 0);
                 StartCoroutine(RotateCamera());

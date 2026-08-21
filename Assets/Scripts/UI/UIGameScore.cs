@@ -10,10 +10,12 @@ public class UIGameScore : MonoBehaviour
     PlayerType playerType;
 
     private Monster monster;
+    private MonsterSpawn monsterSpawn;
     
     [SerializeField] private Slider hpBar;
     [SerializeField] private Slider expBar;
     [SerializeField] private TMP_Text pLevelText;
+    [SerializeField] private TMP_Text scoreText;
     [SerializeField] private Slider absorptionBar;
 
     [SerializeField] private Button[] skillButtons;
@@ -27,6 +29,7 @@ public class UIGameScore : MonoBehaviour
 
     void Start()
     {
+        monsterSpawn = FindFirstObjectByType<MonsterSpawn>();
         hpBar.maxValue = player.pMaxHP;
         expBar.maxValue = player.pMaxExp;
         absorptionBar.maxValue = player.pAbsorptionLimit;
@@ -41,6 +44,16 @@ public class UIGameScore : MonoBehaviour
         hpBar.value = player.pCurrHP;
         expBar.value = player.pCurrExp;
         absorptionBar.value = player.pAbsorption;
+
+        if (monsterSpawn == null)
+        {
+            monsterSpawn = FindFirstObjectByType<MonsterSpawn>();
+        }
+
+        if (scoreText != null && monsterSpawn != null)
+        {
+            scoreText.text = $"Score: {monsterSpawn.TotalScore}";
+        }
 
         playerType = player.playerType;
 
@@ -73,25 +86,19 @@ public class UIGameScore : MonoBehaviour
             skillButtons[i].onClick.RemoveAllListeners();
         }
         
-        // 현재 가진 스킬만 활성
-        foreach (int skill in playerSkill.AttackSkillNumbers)
+        // 선택된 스킬은 상단 1~3번 슬롯 버튼에 순서대로 표시한다.
+        for (int i = 0; i < playerSkill.AttackSkillNumbers.Length && i < skillButtons.Length; i++)
         {
-            int skillBtn = skill - 1;
-
-            if (skillBtn < 0 || skillBtn >= skillButtons.Length) continue;
-
-            skillButtons[skillBtn].interactable = true;
-
-            int skillNum = skill;
-
-            skillButtons[skillBtn].onClick.AddListener(() =>
-            player.UseSkill(skillNum));
+            int slotIndex = i;
+            skillButtons[slotIndex].interactable = true;
+            skillButtons[slotIndex].onClick.AddListener(() =>
+                player.UseSkillAtSlot(slotIndex));
         }
     }
 
     /*public void OnClickSkill(int skillNumber)
     {
-        player.UseSkill(player.Skill.AttackSkillNumbers[skillNumber]);
+        player.UseSkillAtSlot(skillNumber);
     }*/
 
     public void SettingPanelOpen()

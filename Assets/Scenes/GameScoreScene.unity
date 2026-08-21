@@ -2693,6 +2693,7 @@ MonoBehaviour:
   hpBar: {fileID: 1335136450}
   expBar: {fileID: 1141244871}
   pLevelText: {fileID: 975536510}
+  scoreText: {fileID: 1609679659}
   absorptionBar: {fileID: 1418926307}
   skillButtons:
   - {fileID: 841160867}

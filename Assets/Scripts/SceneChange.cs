@@ -14,6 +14,18 @@ public class SceneChange : MonoBehaviour
     
     public void StartToGame()
     {
+        if (GameManager.Instance == null || uiStart == null)
+        {
+            Debug.LogError("GameManager or UIStart is not assigned.", this);
+            return;
+        }
+
+        if (uiStart.modeIndex != 1 && uiStart.modeIndex != 2)
+        {
+            Debug.LogWarning("Select a game mode before starting.", this);
+            return;
+        }
+
         GameManager.Instance.diffIndex = uiStart.diffIndex;
         GameManager.Instance.modeIndex = uiStart.modeIndex;
 

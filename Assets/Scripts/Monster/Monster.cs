@@ -151,7 +151,7 @@ public abstract class Monster : MonoBehaviour
 
     protected virtual void OnDeath() { }
 
-    protected void SpawnDeathMarkAndDestroy(int experience)
+    protected void SpawnDeathMarkAndDestroy(int experience, int score)
     {
         BoxCollider col = GetComponent<BoxCollider>();
         if (deathMark != null && col != null)
@@ -161,6 +161,7 @@ public abstract class Monster : MonoBehaviour
                 Quaternion.Euler(90, 0, 0));
         }
 
+        FindFirstObjectByType<MonsterSpawn>()?.AddScore(score);
         player.GetExp(experience);
         Destroy(gameObject);
     }

@@ -65,23 +65,31 @@ public class PlayerSkill : MonoBehaviour
     public void UseSkill(int skillNumber)
     {
         Debug.Log($"스킬 {skillNumber}");
+        AttackRange();
         AttackSkill();
     }
 
-    public void DestroyDeathMark()
+    public bool DestroyDeathMark()
     {
         if (pAttackPoint == null)
         {
             Debug.LogWarning("Attack point is not assigned.", this);
-            return;
+            return false;
         }
 
+        bool destroyed = false;
         foreach (Collider collider in Physics.OverlapBox(pAttackPoint.position, pAttackRange))
         {
             if (collider.CompareTag("DeathMark"))
             {
-                collider.GetComponent<MonsterDeathMark>()?.DestroyMark();
+                MonsterDeathMark deathMark = collider.GetComponent<MonsterDeathMark>();
+                if (deathMark == null) continue;
+
+                deathMark.DestroyMark();
+                destroyed = true;
             }
         }
+
+        return destroyed;
     }
 }

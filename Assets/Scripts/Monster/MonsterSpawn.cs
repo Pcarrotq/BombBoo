@@ -1,20 +1,21 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MonsterSpawn : MonoBehaviour
 {
+    private const int WaveTargetScore = 500;
+
     [SerializeField] private Elemental elementalPrefab;
     [SerializeField] private Fish fishPrefab;
     [SerializeField] private Spider spiderPrefab;
     [SerializeField] private Tiger tigerPrefab;
     [SerializeField] private Transform cameraPivot;
 
-    private int maxMonster;
-    private int currMonster;
-    private Vector3 randomPos;
-    private readonly List<Monster> spawnedMonsters = new List<Monster>();
+    [SerializeField] private float elementalSpawnMinInterval = 3f;
+    [SerializeField] private float elementalSpawnMaxInterval = 5f;
 
-    private float spawnTime;
+    public int TotalScore { get; private set; }
+    public int WaveScore { get; private set; }
+    public int WaveNumber { get; private set; }
 
     // Start is called before the first frame update
     void Start()
@@ -26,43 +27,61 @@ public class MonsterSpawn : MonoBehaviour
             return;
         }
 
-        maxMonster = 20;
-        currMonster = 0;
-
-        spawnTime = 10f;
-        InvokeRepeating(nameof(SpawnMonster), 1f, spawnTime);
+        StartNextWave();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AddScore(int score)
     {
+        TotalScore += score;
+        WaveScore += score;
+
+        if (WaveScore >= WaveTargetScore)
+        {
+            StartNextWave();
+        }
     }
 
-    void SpawnMonster()
+    private void StartNextWave()
     {
-        spawnedMonsters.RemoveAll(spawnedMonster => spawnedMonster == null);
-        currMonster = spawnedMonsters.Count;
+        WaveNumber++;
+        WaveScore = 0;
+        Spawn(SelectSpecialMonsterPrefab());
+        SpawnElemental();
+        CancelInvoke(nameof(SpawnElemental));
+        ScheduleNextElemental();
+    }
 
-        if (currMonster >= maxMonster) return;
+    private void SpawnElemental()
+    {
+        Spawn(elementalPrefab);
+        ScheduleNextElemental();
+    }
 
-        randomPos = new Vector3(
+    private void ScheduleNextElemental()
+    {
+        float minInterval = Mathf.Min(elementalSpawnMinInterval, elementalSpawnMaxInterval);
+        float maxInterval = Mathf.Max(elementalSpawnMinInterval, elementalSpawnMaxInterval);
+        Invoke(nameof(SpawnElemental), Random.Range(minInterval, maxInterval));
+    }
+
+    private void Spawn(Monster prefab)
+    {
+        Vector3 randomPos = new Vector3(
             Random.Range(-5f, 5f),
             Random.Range(-5f, 5f),
             Random.Range(-5f, 5f));
 
-        Monster m = Instantiate(SelectPrefab(), randomPos, Quaternion.identity);
+        Monster m = Instantiate(prefab, randomPos, Quaternion.identity);
         m.SetCameraPivot(cameraPivot);
-        spawnedMonsters.Add(m);
-        currMonster = spawnedMonsters.Count;
     }
 
-    private Monster SelectPrefab()
+    private Monster SelectSpecialMonsterPrefab()
     {
-        int roll = Random.Range(0, 100);
-
-        if (roll < 50) return elementalPrefab;
-        if (roll < 70) return fishPrefab;
-        if (roll < 85) return spiderPrefab;
-        return tigerPrefab;
+        return Random.Range(0, 3) switch
+        {
+            0 => fishPrefab,
+            1 => spiderPrefab,
+            _ => tigerPrefab
+        };
     }
 }
