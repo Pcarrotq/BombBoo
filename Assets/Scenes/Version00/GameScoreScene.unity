@@ -1696,7 +1696,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1509693206}
         m_TargetAssemblyTypeName: SceneChange, Assembly-CSharp
-        m_MethodName: GameToStart
+        m_MethodName: GameToSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3688,7 +3688,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1509693206}
         m_TargetAssemblyTypeName: SceneChange, Assembly-CSharp
-        m_MethodName: GameToStart
+        m_MethodName: GameToSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5673,7 +5673,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1509693206}
         m_TargetAssemblyTypeName: SceneChange, Assembly-CSharp
-        m_MethodName: GameToStart
+        m_MethodName: GameToSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5993,6 +5993,8 @@ MonoBehaviour:
   spiderPrefab: {fileID: 716799177222074301, guid: 02259b4fffad8924b831a4af31d52589, type: 3}
   tigerPrefab: {fileID: 2645945643666243900, guid: cd5dea581e642e241ba5f10be590cc2a, type: 3}
   cameraPivot: {fileID: 334758230}
+  elementalSpawnMinInterval: 3
+  elementalSpawnMaxInterval: 5
 --- !u!4 &1611710549
 Transform:
   m_ObjectHideFlags: 0

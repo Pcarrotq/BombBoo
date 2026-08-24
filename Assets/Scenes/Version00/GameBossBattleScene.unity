@@ -354,12 +354,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8138857}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
-  m_LocalScale: {x: 20, y: 10, z: 0.5}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 20}
+  m_LocalScale: {x: 40, y: 15, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 927024209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &28371940
 GameObject:
@@ -1355,7 +1355,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1509693206}
         m_TargetAssemblyTypeName: SceneChange, Assembly-CSharp
-        m_MethodName: GameToStart
+        m_MethodName: GameToSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1917,12 +1917,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 563224511}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 20, y: 10, z: 0.5}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
+  m_LocalScale: {x: 40, y: 15, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 927024209}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &585239023
 GameObject:
@@ -2097,12 +2097,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 658289165}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 10, y: 0, z: 0}
-  m_LocalScale: {x: 20, y: 10, z: 0.5}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 20, y: 0, z: 0}
+  m_LocalScale: {x: 40, y: 15, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 927024209}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &670673844
 GameObject:
@@ -2724,7 +2724,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1509693206}
         m_TargetAssemblyTypeName: SceneChange, Assembly-CSharp
-        m_MethodName: GameToStart
+        m_MethodName: GameToSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2871,10 +2871,45 @@ Transform:
   m_GameObject: {fileID: 910577086}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 5, z: 0}
-  m_LocalScale: {x: 20, y: 0.5, z: 20}
+  m_LocalPosition: {x: 0, y: 10.3, z: 0}
+  m_LocalScale: {x: 40, y: 0.5, z: 40}
   m_ConstrainProportionsScale: 0
   m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &927024208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 927024209}
+  m_Layer: 0
+  m_Name: Walls
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &927024209
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927024208}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8138861}
+  - {fileID: 658289169}
+  - {fileID: 563224515}
+  - {fileID: 1181849854}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &995331980
@@ -3237,12 +3272,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1181849850}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -10, y: 0, z: 0}
-  m_LocalScale: {x: 20, y: 10, z: 0.5}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -20, y: 0, z: 0}
+  m_LocalScale: {x: 40, y: 15, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 927024209}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &1254829990
 GameObject:
@@ -3520,6 +3555,8 @@ MonoBehaviour:
   spiderPrefab: {fileID: 716799177222074301, guid: 02259b4fffad8924b831a4af31d52589, type: 3}
   tigerPrefab: {fileID: 2645945643666243900, guid: cd5dea581e642e241ba5f10be590cc2a, type: 3}
   cameraPivot: {fileID: 229317398}
+  elementalSpawnMinInterval: 3
+  elementalSpawnMaxInterval: 5
 --- !u!4 &1367597770
 Transform:
   m_ObjectHideFlags: 0
@@ -4449,7 +4486,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1509693206}
         m_TargetAssemblyTypeName: SceneChange, Assembly-CSharp
-        m_MethodName: GameToStart
+        m_MethodName: GameToSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4768,7 +4805,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -5, z: 0}
-  m_LocalScale: {x: 20, y: 0.5, z: 20}
+  m_LocalScale: {x: 40, y: 0.5, z: 40}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -5686,10 +5723,7 @@ SceneRoots:
   - {fileID: 2056957353}
   - {fileID: 419113545}
   - {fileID: 1704286985}
-  - {fileID: 8138861}
-  - {fileID: 658289169}
-  - {fileID: 563224515}
-  - {fileID: 1181849854}
+  - {fileID: 927024209}
   - {fileID: 910577090}
   - {fileID: 1519972005}
   - {fileID: 1788378667}

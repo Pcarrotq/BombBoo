@@ -14,12 +14,22 @@ public class MonsterAI : MonoBehaviour
     private int attackForce;
     private float moveSpeed;
     private float idleMoveSpeed;
+    private float idleMoveChance;
     private Vector3 idleDirection;
     private float nextIdleDirectionTime;
     private float nextAttackTime;
     private bool isInitialized;
 
-    public void Initialize(Monster owner, Rigidbody rigidbody, Player target, float detectionRange, float attackDistance, int damage, float chaseSpeed, float idleSpeed)
+    public void Initialize(
+        Monster owner,
+        Rigidbody rigidbody,
+        Player target,
+        float detectionRange,
+        float attackDistance,
+        int damage,
+        float chaseSpeed,
+        float idleSpeed,
+        float idleChance)
     {
         monster = owner;
         rb = rigidbody;
@@ -30,6 +40,7 @@ public class MonsterAI : MonoBehaviour
         attackForce = damage;
         moveSpeed = chaseSpeed;
         idleMoveSpeed = idleSpeed;
+        idleMoveChance = idleChance;
         state = MonsterState.Idle;
         isInitialized = true;
     }
@@ -78,7 +89,7 @@ public class MonsterAI : MonoBehaviour
 
         if (Time.time >= nextIdleDirectionTime)
         {
-            idleDirection = Random.insideUnitSphere;
+            idleDirection = Random.value < idleMoveChance ? Random.insideUnitSphere : Vector3.zero;
             idleDirection.y = 0f;
             idleDirection.Normalize();
             nextIdleDirectionTime = Time.time + 2f;

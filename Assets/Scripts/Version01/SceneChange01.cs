@@ -3,40 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneChange : MonoBehaviour
+public class SceneChange01 : MonoBehaviour
 {
-    [SerializeField] private UIStart uiStart;
-
     public void QuitGame()
     {
         Application.Quit();
     }
-    
+
     public void StartToGame()
     {
-        if (GameManager.Instance == null || uiStart == null)
-        {
-            Debug.LogError("GameManager or UIStart is not assigned.", this);
-            return;
-        }
-
-        if (uiStart.modeIndex != 1 && uiStart.modeIndex != 2)
-        {
-            Debug.LogWarning("Select a game mode before starting.", this);
-            return;
-        }
-
-        GameManager.Instance.diffIndex = uiStart.diffIndex;
-        GameManager.Instance.modeIndex = uiStart.modeIndex;
-
-        if (uiStart.modeIndex == 1)
-        {
-            LoadScene("GameBossBattleScene");
-        }
-        if (uiStart.modeIndex == 2)
-        {
-            LoadScene("GameScoreScene");
-        }
+        BossHeartThorn01.ResetProgress();
+        LoadScene("GameScene");
     }
 
     public void GameToStart()

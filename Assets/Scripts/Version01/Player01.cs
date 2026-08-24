@@ -1,46 +1,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerSkill))]
-public class Player : MonoBehaviour
+public class Player01 : MonoBehaviour
 {
-    private const float DamageCooldown = 0.5f;
-
     private SpriteRenderer sprite;
-    public PlayerType playerType;
     private Rigidbody rb;
     private Animator animator;
-    private float pSpeed = 5f;
-    public float MoveSpeed => pSpeed;
-    private bool isGround;
     private readonly HashSet<Collider> groundContacts = new HashSet<Collider>();
-    private float pJumpForce = 5f;
-    public float JumpForce => pJumpForce;
     private Vector3 moveDirection;
-    private float nextDamageTime;
+    private bool isGround;
+    private int absorptionAmount;
 
-    [SerializeField] private PlayerSkill playerSkill;
-    public PlayerSkill Skill => playerSkill;
-
-    public float pMaxHP;
-    public float pCurrHP;
-    public int pMaxExp;
-    public int pCurrExp;
-    public int needExp;
-    public int pAbsorption;
-    private int pAbsorptionAmount;
-    public int pAbsorptionLimit;
-    private int pAbsorptionLow;
+    private float pMaxHP;
+    private float pCurrHP;
 
     [SerializeField] private Transform cameraPivot;
-    public float booTimer;
-    private UIGameScore uiGameScore;
-    private UIGameBossBattle uiGameBossBattle;
+    private float moveSpeed = 5f;
+    private float jumpForce = 5f;
+    
+    [SerializeField] private Transform pAttackPoint;
+    private float attackRadius = 1f;
+    private const float AttackForce = 10f;
 
-    void Awake()
-    {
-        playerSkill ??= GetComponent<PlayerSkill>();
-    }
+    private float nextDamageTime;
+    private const float DamageCooldown = 0.5f;
+
+    public PlayerType playerType;
+    private float booTimer;
+    private int pCurrExp;
+    private int pAbsorption;
+    private int pAbsorptionLimit;
 
     void Start()
     {
@@ -48,36 +37,28 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation;
         animator = GetComponent<Animator>();
-
-        playerType = PlayerType.bomb;
+        
         pMaxHP = 100f;
         pCurrHP = pMaxHP;
-        pMaxExp = 100;
-        pCurrExp = 0;
-        needExp = 100;
-        pAbsorption = 0;
-        pAbsorptionAmount = 10;
-        pAbsorptionLimit = 100;
-        pAbsorptionLow = 10;
-        booTimer = 5f;
 
-        uiGameBossBattle = FindFirstObjectByType<UIGameBossBattle>();
-        uiGameScore = FindFirstObjectByType<UIGameScore>();
-        RefreshSkills();
+        playerType = PlayerType.bomb;
+        booTimer = 5f;
+        absorptionAmount = 10;
+        pAbsorptionLimit = 100;
     }
 
     void Update()
     {
         moveDirection = Vector3.zero;
         KeyInput();
-        FollowCameraRotate();
+        transform.rotation = cameraPivot.rotation;
     }
 
     void FixedUpdate()
     {
         if (moveDirection != Vector3.zero)
         {
-            rb.MovePosition(rb.position + moveDirection.normalized * pSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(rb.position + moveDirection.normalized * moveSpeed * Time.fixedDeltaTime);
         }
     }
 
@@ -104,12 +85,7 @@ public class Player : MonoBehaviour
         animator.SetBool("IsGround", isGround);
     }
 
-    void FollowCameraRotate()
-    {
-        transform.rotation = cameraPivot.rotation;
-    }
-
-    void KeyInput()
+    private void KeyInput()
     {
         animator.SetBool("isMoving", false);
 
@@ -137,36 +113,17 @@ public class Player : MonoBehaviour
             {
                 animator.SetBool("isJumpReady", false);
                 animator.SetBool("IsJump", true);
-                rb.AddForce(Vector3.up * pJumpForce, ForceMode.Impulse);
-            }
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                SetPlayerType(PlayerType.boo);
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                playerSkill.AttackRange();
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                UseSkillAtSlot(0);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                UseSkillAtSlot(1);
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                UseSkillAtSlot(2);
+                AttackRange();
             }
         }
-        else if (playerType == PlayerType.boo)
+        else
         {
-            if (booTimer > 0)
-            {
-                booTimer -= Time.deltaTime;
-            }
-            else
+            booTimer -= Time.deltaTime;
+            if (booTimer <= 0f)
             {
                 SetPlayerType(PlayerType.bomb);
                 return;
@@ -194,42 +151,48 @@ public class Player : MonoBehaviour
                 animator.SetBool("isMoving", true);
                 moveDirection += cameraPivot.right;
             }
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                SetPlayerType(PlayerType.bomb);
-            }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                if (playerSkill.DestroyDeathMark())
+                if (DestroyDeathMark())
                 {
                     pCurrExp = Mathf.Max(0, pCurrExp - 5);
-                    pAbsorption += pAbsorptionAmount;
+                    pAbsorption += absorptionAmount;
                     if (pAbsorption >= pAbsorptionLimit)
                     {
-                        TakeDamage(pCurrHP, true);
+                        SelfDestruct();
                         pAbsorption = 0;
                     }
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                pAbsorption = Mathf.Max(0, pAbsorption - pAbsorptionLow);
-            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            SetPlayerType(playerType == PlayerType.bomb ? PlayerType.boo : PlayerType.bomb);
         }
     }
 
-    private void SetPlayerType(PlayerType type)
-    {
-        bool isBoo = type == PlayerType.boo;
-        playerType = type;
-        rb.useGravity = !isBoo;
-        animator.SetBool("isBoo", isBoo);
-        animator.SetBool("isJumpReady", false);
+    private static float RollDamage(float value) { return Random.Range(Mathf.Max(0f, value - 10f), value + 10f); }
 
-        if (!isBoo)
+    public bool DestroyDeathMark()
+    {
+        if (!TryGetAttackPoint()) return false;
+        bool destroyed = false;
+        foreach (Collider collider in GetAttackHits())
         {
-            booTimer = 5f;
+            if (!collider.CompareTag("DeathMark")) continue;
+            MonsterDeathMark deathMark = collider.GetComponent<MonsterDeathMark>();
+            if (deathMark == null) continue;
+            deathMark.DestroyMark();
+            destroyed = true;
         }
+        return destroyed;
+    }
+
+    public void SelfDestruct()
+    {
+        Damage(Physics.OverlapSphere(transform.position, 34f), RollDamage(250f));
+        TakeDamage(RollDamage(250f), true);
     }
 
     public void TakeDamage(float damage, bool ignoreCooldown = false)
@@ -247,52 +210,64 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void GetExp(int exp)
+    public void AttackRange()
     {
-        pCurrExp += exp;
-        if (uiGameScore != null)
+        if (!TryGetAttackPoint()) return;
+
+        Collider[] hits = GetAttackHits();
+        Damage(hits, AttackForce);
+
+        HashSet<BossPond> ponds = new HashSet<BossPond>();
+        HashSet<BossHeartEnter01> entrances = new HashSet<BossHeartEnter01>();
+        foreach (Collider hit in hits)
         {
-            RefreshSkills();
-        }
+            BossPond pond = hit.GetComponentInParent<BossPond>();
+            if (pond != null && ponds.Add(pond)) pond.TryActivate();
 
-        Debug.Log("Player Exp = " + pCurrExp);
-    }
-
-    public void ShowInsufficientExperience()
-    {
-        ShowWarning("경험치가 충분하지 않습니다.", "Not enough experience.");
-    }
-
-    public void ShowWarning(string message, string fallbackMessage)
-    {
-        if (uiGameBossBattle == null)
-        {
-            uiGameBossBattle = FindFirstObjectByType<UIGameBossBattle>();
-        }
-
-        uiGameBossBattle?.ShowWarning(message, fallbackMessage);
-    }
-
-    public void UseSkill(int skillNumber)
-    {
-        playerSkill.UseSkill(skillNumber);
-
-        if (uiGameScore != null)
-        {
-            uiGameScore.SkillButtons();
+            BossHeartEnter01 entrance = hit.GetComponentInParent<BossHeartEnter01>();
+            if (entrance != null && entrances.Add(entrance)) entrance.TryEnter();
         }
     }
 
-    public void UseSkillAtSlot(int slotIndex)
+    private static IEnumerable<Monster> UniqueMonsters(Collider[] colliders)
     {
-        if (slotIndex < 0 || slotIndex >= playerSkill.AttackSkillNumbers.Length) return;
-
-        UseSkill(playerSkill.AttackSkillNumbers[slotIndex]);
+        HashSet<Monster> monsters = new HashSet<Monster>();
+        foreach (Collider collider in colliders)
+        {
+            Monster monster = collider.GetComponentInParent<Monster>();
+            if (monster != null && monsters.Add(monster)) yield return monster;
+        }
     }
 
-    void RefreshSkills()
+
+    private static void Damage(Collider[] colliders, float damage, Monster excluded = null)
     {
-        playerSkill.AttackSkill();
-        uiGameScore?.SkillButtons();
+        foreach (Monster monster in UniqueMonsters(colliders)) if (monster != excluded) monster.TakeDamage(damage);
+    }
+
+    private bool TryGetAttackPoint()
+    {
+        if (pAttackPoint != null) return true;
+        Debug.LogWarning("Attack point is not assigned.", this);
+        return false;
+    }
+
+    private Collider[] GetAttackHits()
+    {
+        return Physics.OverlapCapsule(transform.position, pAttackPoint.position, attackRadius);
+    }
+
+    private void SetPlayerType(PlayerType type)
+    {
+        bool isBoo = type == PlayerType.boo;
+        playerType = type;
+        rb.useGravity = !isBoo;
+        animator.SetBool("isBoo", isBoo);
+        animator.SetBool("isJumpReady", false);
+
+        if (!isBoo)
+        {
+            booTimer = 5f;
+        }
     }
 }

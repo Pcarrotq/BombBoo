@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public abstract class Monster : MonoBehaviour
@@ -16,6 +17,7 @@ public abstract class Monster : MonoBehaviour
     private Transform playerTransform;
     [SerializeField] private Transform cameraPivot;
     private bool isReleased;
+    private float stunnedUntil;
 
     protected Player Player => player;
     protected virtual bool UsesAI => false;
@@ -23,8 +25,9 @@ public abstract class Monster : MonoBehaviour
     protected virtual bool UsesGravity => true;
     protected virtual bool IsKinematic => false;
     protected virtual float ChaseMoveSpeed => 2f;
-    protected virtual float IdleMoveSpeed => 0f;
-    public bool CanRunAI => !monIsDead && UsesAI && (!StartsSealed || isReleased);
+    protected virtual float IdleMoveSpeed => 0.5f;
+    protected virtual float IdleMoveChance => 0.5f;
+    public bool CanRunAI => !monIsDead && Time.time >= stunnedUntil && UsesAI && (!StartsSealed || isReleased);
     public bool IsReleased => isReleased;
 
     protected abstract MonsterType Type { get; }
@@ -69,7 +72,16 @@ public abstract class Monster : MonoBehaviour
         }
 
         MonsterAI monsterAI = GetComponent<MonsterAI>() ?? gameObject.AddComponent<MonsterAI>();
-        monsterAI.Initialize(this, rb, player, DetectRange, AttackRange, AttackForce, ChaseMoveSpeed, IdleMoveSpeed);
+        monsterAI.Initialize(
+            this,
+            rb,
+            player,
+            DetectRange,
+            AttackRange,
+            AttackForce,
+            ChaseMoveSpeed,
+            IdleMoveSpeed,
+            IdleMoveChance);
     }
 
     protected int AttackForce { get; private set; }
@@ -147,6 +159,35 @@ public abstract class Monster : MonoBehaviour
 
         monIsDead = true;
         OnDeath();
+    }
+
+    public void Stun(float duration)
+    {
+        stunnedUntil = Mathf.Max(stunnedUntil, Time.time + Mathf.Max(0f, duration));
+    }
+
+    public void PullTo(Vector3 position)
+    {
+        if (rb != null && !rb.isKinematic) rb.MovePosition(position);
+        else transform.position = position;
+    }
+
+    public void ApplyDamageOverTime(float damagePerSecond, float duration)
+    {
+        StartCoroutine(DamageOverTime(damagePerSecond, duration));
+    }
+
+    private IEnumerator DamageOverTime(float damagePerSecond, float duration)
+    {
+        float remaining = duration;
+        while (!monIsDead && remaining > 0f)
+        {
+            float interval = Mathf.Min(1f, remaining);
+            yield return new WaitForSeconds(interval);
+            if (monIsDead) yield break;
+            TakeDamage(damagePerSecond * interval);
+            remaining -= interval;
+        }
     }
 
     protected virtual void OnDeath() { }
