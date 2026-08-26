@@ -12,6 +12,7 @@ public class SceneChange01 : MonoBehaviour
 
     public void StartToGame()
     {
+        Exit.ResetWaves();
         BossHeartThorn01.ResetProgress();
         LoadScene("GameScene");
     }

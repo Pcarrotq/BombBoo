@@ -7,6 +7,7 @@ public class BossHeartEnter01 : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Color lockedColor;
     private bool isUnlocked;
+    private int unlockedFrame = -1;
 
     void Awake()
     {
@@ -16,13 +17,14 @@ public class BossHeartEnter01 : MonoBehaviour
 
     public void SetUnlocked(bool unlocked)
     {
+        if (unlocked && !isUnlocked) unlockedFrame = Time.frameCount;
         isUnlocked = unlocked;
         if (spriteRenderer != null) spriteRenderer.color = unlocked ? unlockedColor : lockedColor;
     }
 
     public void TryEnter()
     {
-        if (!isUnlocked || BossHeartThorn01.IsComplete) return;
+        if (!isUnlocked || Time.frameCount <= unlockedFrame || BossHeartThorn01.IsComplete) return;
 
         BossHeartThorn01.BeginChallenge();
         SceneManager.LoadScene("BossInsideScene");

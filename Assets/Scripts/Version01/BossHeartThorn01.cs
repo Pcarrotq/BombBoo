@@ -10,6 +10,14 @@ public class BossHeartThorn01 : MonoBehaviour
     public static bool ChallengeStarted { get; private set; }
     public static int OuterPondsToRestore { get; private set; }
     public static bool IsComplete => SuccessfulPulls >= RequiredPulls;
+    public float TimeUntilNextBeat => Mathf.Max(0f, nextBeatTime - Time.time);
+    public float CurrentBeatInterval { get; private set; }
+    public bool IsInputWindowOpen =>
+        (state == ThornState.CanGrab || state == ThornState.CanPull) && Time.time <= inputDeadline;
+    public bool IsPullWindow => state == ThornState.CanPull;
+    public float InputWindowProgress => IsInputWindowOpen
+        ? 1f - Mathf.Clamp01((inputDeadline - Time.time) / beatInputWindow)
+        : 0f;
 
     [SerializeField] private Transform heart;
     [SerializeField] private Transform thornVisual;
@@ -89,12 +97,12 @@ public class BossHeartThorn01 : MonoBehaviour
             return;
         }
 
-        if (Time.time >= nextBeatTime) Beat();
-        if (state == ThornState.CanPull && Time.time > inputDeadline)
+        if ((state == ThornState.CanGrab || state == ThornState.CanPull) && Time.time > inputDeadline)
         {
             Fail();
             return;
         }
+        if (Time.time >= nextBeatTime) Beat();
         if (Input.GetKeyDown(KeyCode.E) && IsPlayerClose()) HandleInteraction();
     }
 
@@ -216,7 +224,8 @@ public class BossHeartThorn01 : MonoBehaviour
     private void ScheduleNextBeat()
     {
         float minimum = Mathf.Max(0.1f, minBeatInterval);
-        nextBeatTime = Time.time + Random.Range(minimum, Mathf.Max(minimum, maxBeatInterval));
+        CurrentBeatInterval = Random.Range(minimum, Mathf.Max(minimum, maxBeatInterval));
+        nextBeatTime = Time.time + CurrentBeatInterval;
     }
 
     private void ChooseThornDirection()

@@ -4,7 +4,14 @@ using UnityEngine.SceneManagement;
 public class Exit : MonoBehaviour
 {
     private const float ExitRange = 0.75f;
+    public static int WaveNumber { get; private set; } = 1;
     private Player01 player;
+    private bool isExiting;
+
+    public static void ResetWaves()
+    {
+        WaveNumber = 1;
+    }
 
     public static void Show(Vector3 position, Sprite sprite)
     {
@@ -21,10 +28,13 @@ public class Exit : MonoBehaviour
     void Update()
     {
         if (player == null) player = FindFirstObjectByType<Player01>();
-        if (player == null || Vector3.Distance(player.transform.position, transform.position) > ExitRange) return;
+        if (isExiting || player == null ||
+            Vector3.Distance(player.transform.position, transform.position) > ExitRange) return;
 
-        Debug.Log("Game Clear!");
+        isExiting = true;
+        WaveNumber++;
+        Debug.Log($"Wave clear! Starting wave {WaveNumber}.");
         BossHeartThorn01.ResetProgress();
-        SceneManager.LoadScene("StartScene");
+        SceneManager.LoadScene("GameScene");
     }
 }
